@@ -1,0 +1,41 @@
+[
+  {
+    "id": "2c6f8fa9-ca13-4008-9851-f4463522a982",
+    "name": "nuts",
+    "unit": "kg",
+    "price": 11,
+    "imageUrl": "/uploads/c3abe13b-832c-4736-aa67-1938c7c597be.jpg",
+    "createdAt": "2025-10-15T20:50:51.776Z",
+    "imports": [],
+    "exports": [],
+    "baseStock": 1125,
+    "source": "bought",
+    "currency": "USD"
+  },
+  {
+    "id": "f5ef6298-c459-46e3-b3c4-4ffdb5216290",
+    "name": "keshta",
+    "unit": "kg",
+    "price": 8,
+    "imageUrl": "/uploads/8279effa-d976-4f01-8974-b6933eabbadf.jpg",
+    "createdAt": "2025-10-15T20:51:38.677Z",
+    "imports": [],
+    "exports": [],
+    "baseStock": 2500,
+    "source": "bought",
+    "currency": "USD"
+  },
+  {
+    "id": "a27e8ffa-2d6e-4ff4-a869-74dc94c8b457",
+    "name": "nuts",
+    "unit": "kg",
+    "price": 15,
+    "imageUrl": "/uploads/55e58c84-41b3-400e-a506-3fe91e13611f.jpg",
+    "createdAt": "2025-10-15T20:58:04.542Z",
+    "imports": [],
+    "exports": [],
+    "baseStock": 2500,
+    "source": "bought",
+    "currency": "USD"
+  }
+]

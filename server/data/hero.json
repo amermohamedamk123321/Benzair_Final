@@ -1,0 +1,42 @@
+{
+  "slides": [
+    {
+      "id": "c0def846-63b8-42c5-b33e-0d836e700209",
+      "url": "/uploads/409d68b6-2ee8-46dc-900f-b6f10bb7b374.webp"
+    },
+    {
+      "id": "e39c904b-6d75-4a31-bf03-f5012acf7ccd",
+      "url": "/uploads/0a2d4b7c-07c5-49fd-8034-1048175e8f74.webp"
+    },
+    {
+      "id": "13d60a78-83b0-4957-9819-6dff2f17e0e0",
+      "url": "/uploads/6fd598e7-3837-4347-a19f-79423ae67106.webp"
+    },
+    {
+      "id": "e3739b21-5b75-49e7-af44-3feee77279e8",
+      "url": "/uploads/b6ca789f-ee33-4ee2-9606-2d5e9ea6a0e8.webp"
+    },
+    {
+      "id": "3cce6795-2e59-4418-add3-38cd264a71b3",
+      "url": "/uploads/4a7f80af-7780-4dea-ae1b-208923a532f9.webp"
+    },
+    {
+      "id": "fd180c72-e399-4350-a574-79220fc7be38",
+      "url": "/uploads/6ecef918-897e-4801-9805-a2d0f5f469b3.webp"
+    }
+  ],
+  "texts": {
+    "en": {
+      "title": "Benazir Yakta Trading Company  .  Active since 2017",
+      "lead": "We are here to enhance global access to high-quality Afghan agricultural products while supporting women’s economic empowerment and promoting ethical, sustainable business practices.",
+      "values": "We believe in Quality Excellence, Sustainability, Women’s Empowerment, and Fair Trade.",
+      "services": "Services: Processing, packaging, and exporting premium dried fruits, nuts and spices; farmer training; creating jobs and empowering women; export partnerships in the UK, Switzerland, France, Dubai and India."
+    },
+    "fa": {
+      "title": "شرکت تجارتی بینظیر یکتا . فعال از 2017",
+      "lead": "ما اینجا هستیم تا دسترسی جهانی به محصولات زراعتی با کیفیت بالای افغانستان را در عین حال حمایت از توانمند سازی اقتصادی زنان و ترویج شیوه های اخلاقی و پایدار تجارتی افزایش دهیم.",
+      "values": "ما به تعالی کیفیت، پایداری، توانمند سازی زنان و تجارت عادلانه باور داریم.",
+      "services": "خدمات: پروسس، بسته بندی، و صادرات میوه های خشک، آجیل و ادویه جات عالی؛ آموزش دهاقین؛ ایجاد وظایف و توانمند سازی زنان؛ مشارکت های صادراتی در انگلستان، سویس، فرانسه، دبی و هند."
+    }
+  }
+}
