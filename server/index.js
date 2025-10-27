@@ -8,7 +8,6 @@ import ordersRouter from "./routes/orders.js";
 import heroRouter from "./routes/hero.js";
 import awardsRouter from "./routes/awards.js";
 import adminsRouter from "./routes/admins.js";
-import assetsRouter from "./routes/assets.js";
 
 export function createServer() {
   const app = express();
