@@ -31,7 +31,7 @@ router.get('/:filename', (req, res) => {
     
     // Set appropriate content type
     const ext = path.extname(filename).toLowerCase();
-    const contentTypes: Record<string, string> = {
+    const contentTypes = {
       '.webp': 'image/webp',
       '.png': 'image/png',
       '.jpg': 'image/jpeg',
