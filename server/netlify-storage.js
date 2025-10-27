@@ -4,15 +4,22 @@ import path from 'path';
 let blobsAvailable = false;
 let getStore;
 
+// Check if we're in a Netlify serverless environment
+const isNetlifyEnvironment = !!process.env.NETLIFY || !!process.env.NETLIFY_BUILD_BASE;
+
 // Try to import Netlify Blobs (only available in serverless environment)
-try {
-  const { getStore: netlifyGetStore } = await import('@netlify/blobs');
-  getStore = netlifyGetStore;
-  blobsAvailable = true;
-  console.log('✓ Netlify Blobs initialized for serverless');
-} catch (e) {
-  console.log('⚠ Netlify Blobs not available, using file system fallback for local dev');
-  blobsAvailable = false;
+if (isNetlifyEnvironment) {
+  try {
+    const { getStore: netlifyGetStore } = await import('@netlify/blobs');
+    getStore = netlifyGetStore;
+    blobsAvailable = true;
+    console.log('✓ Netlify Blobs storage enabled');
+  } catch (e) {
+    console.log('⚠ Netlify Blobs import failed, falling back to file system:', e.message);
+    blobsAvailable = false;
+  }
+} else {
+  console.log('⚠ Not in Netlify environment, using file system storage for local development');
 }
 
 // Fallback file-based storage for local development
@@ -57,13 +64,11 @@ function saveLocal(key, data) {
 
 // In-memory cache for Netlify Blobs
 const cache = new Map();
-const loadedFromBlobs = new Set();
+const loadPromises = new Map();
 
 // Netlify Blobs storage functions (with in-memory cache)
-async function loadBlob(key, fallback) {
+async function loadFromBlobs(key, fallback) {
   try {
-    if (!blobsAvailable) return loadLocal(key, fallback);
-    
     // Return from cache if already loaded
     if (cache.has(key)) {
       return cache.get(key);
@@ -79,11 +84,10 @@ async function loadBlob(key, fallback) {
     
     const data = JSON.parse(blob);
     cache.set(key, data);
-    loadedFromBlobs.add(key);
     return data;
   } catch (e) {
-    console.warn('netlify blobs load failed', e);
-    // Return fallback on error
+    console.warn('Netlify Blobs load failed for key:', key, e);
+    // Return fallback or cached value on error
     if (cache.has(key)) {
       return cache.get(key);
     }
@@ -92,57 +96,68 @@ async function loadBlob(key, fallback) {
   }
 }
 
-async function saveBlob(key, data) {
+async function saveToBlobs(key, data) {
   try {
-    if (!blobsAvailable) return saveLocal(key, data);
-    
     const store = getStore('data');
     await store.set(key, JSON.stringify(data));
     cache.set(key, data);
-    loadedFromBlobs.add(key);
     return true;
   } catch (e) {
-    console.warn('netlify blobs save failed', e);
+    console.warn('Netlify Blobs save failed for key:', key, e);
     // Still update cache locally on error
     cache.set(key, data);
     return false;
   }
 }
 
-// Synchronous wrapper for initialization (uses local fallback or cache)
+// Synchronous wrapper for initialization and regular use
 function loadSync(key, fallback) {
-  if (blobsAvailable) {
-    // If already in cache, return it
-    if (cache.has(key)) {
-      return cache.get(key);
-    }
-    // Cache the fallback for now, will be replaced when async load completes
-    cache.set(key, fallback);
-    return fallback;
-  } else {
+  if (!blobsAvailable) {
     // Local development: use file system
     return loadLocal(key, fallback);
   }
+  
+  // Netlify environment: use cache or fallback
+  if (cache.has(key)) {
+    return cache.get(key);
+  }
+  
+  // Load from Blobs asynchronously in the background
+  if (!loadPromises.has(key)) {
+    loadPromises.set(key, loadFromBlobs(key, fallback));
+  }
+  
+  // Return fallback immediately while loading
+  cache.set(key, fallback);
+  return fallback;
 }
 
 function saveSync(key, data) {
-  if (blobsAvailable) {
-    // Update in-memory cache immediately
-    cache.set(key, data);
-    // Async save to Netlify Blobs (fire and forget)
-    saveBlob(key, data).catch(e => console.error('Failed to save to Netlify Blobs:', e));
-    return true;
-  } else {
+  if (!blobsAvailable) {
     // Local development: use file system
     return saveLocal(key, data);
   }
+  
+  // Netlify environment: update cache immediately, save asynchronously
+  cache.set(key, data);
+  
+  // Fire and forget the async save
+  saveToBlobs(key, data).catch(e => {
+    console.error('Failed to persist to Netlify Blobs:', e);
+  });
+  
+  return true;
 }
 
-// Ensure data from Netlify Blobs is loaded on first use
+// Ensure data from Netlify Blobs is loaded before using
 async function ensureLoaded(key, fallback) {
-  if (blobsAvailable && !loadedFromBlobs.has(key) && !cache.has(key)) {
-    await loadBlob(key, fallback);
+  if (!blobsAvailable) return;
+  
+  if (!loadPromises.has(key)) {
+    loadPromises.set(key, loadFromBlobs(key, fallback));
   }
+  
+  await loadPromises.get(key);
 }
 
 export const storage = {
@@ -150,8 +165,8 @@ export const storage = {
   load: loadSync,
   save: saveSync,
   // Async operations for explicit async/await usage
-  loadAsync: loadBlob,
-  saveAsync: saveBlob,
+  loadAsync: loadFromBlobs,
+  saveAsync: saveToBlobs,
   // Ensure data is loaded from Netlify Blobs
   ensureLoaded,
 };
