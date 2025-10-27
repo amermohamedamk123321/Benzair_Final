@@ -35,6 +35,7 @@ export function createServer() {
   app.use("/api/hero", heroRouter);
   app.use('/api/awards', awardsRouter);
   app.use('/api/admins', adminsRouter);
+  app.use('/api/assets', assetsRouter);
 
   return app;
 }
