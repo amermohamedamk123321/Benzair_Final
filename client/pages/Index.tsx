@@ -56,19 +56,19 @@ function FeaturedCategoriesGrid(){
   const { t, dir } = useLocale();
   const categories = [
     {
-      image: "../../../assets/03.webp",
+      image: "/api/assets/03.webp",
       key: "categories.fresh",
       title: "categories.fresh.title",
       description: "categories.fresh.desc"
     },
     {
-      image: "../../../assets/02.webp",
+      image: "/api/assets/02.webp",
       key: "categories.dry",
       title: "categories.dry.title",
       description: "categories.dry.desc"
     },
     {
-      image: "../../../assets/01.webp",
+      image: "/api/assets/01.webp",
       key: "categories.spices",
       title: "categories.spices.title",
       description: "categories.spices.desc"
