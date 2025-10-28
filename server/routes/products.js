@@ -29,34 +29,39 @@ router.get("/:id", (req, res) => {
   res.json(withComputed(p));
 });
 
-router.post("/", (req, res) => {
-  const { name, unit = "kg", price = 0, initialImportQty = 0, importDate, imageUrl = "", source = "bought", currency = "USD", initialStock = 0 } = req.body || {};
-  if (!name) return res.status(400).json({ error: "name is required" });
-  const now = new Date();
-  let finalImage = String(imageUrl || "");
-  if (finalImage.startsWith('data:image/')) {
-    const saved = saveDataUrlToUploads(finalImage);
-    if (saved) finalImage = saved;
+router.post("/", async (req, res) => {
+  try {
+    const { name, unit = "kg", price = 0, initialImportQty = 0, importDate, imageUrl = "", source = "bought", currency = "USD", initialStock = 0 } = req.body || {};
+    if (!name) return res.status(400).json({ error: "name is required" });
+    const now = new Date();
+    let finalImage = String(imageUrl || "");
+    if (finalImage.startsWith('data:image/')) {
+      const saved = await saveImageUpload(finalImage);
+      if (saved) finalImage = saved;
+    }
+    const product = {
+      id: randomUUID(),
+      name,
+      unit,
+      price: Number(price) || 0,
+      imageUrl: finalImage,
+      createdAt: now.toISOString(),
+      imports: [],
+      exports: [],
+      baseStock: Number(initialStock) || 0,
+      source: source === "imported" ? "imported" : "bought",
+      currency: currency === "AFN" ? "AFN" : "USD"
+    };
+    if (product.source === "imported" && initialImportQty && Number(initialImportQty) > 0) {
+      product.imports.push({ quantity: Number(initialImportQty), date: (importDate ? new Date(importDate) : now).toISOString() });
+    }
+    products.push(product);
+    storage.save('products', products);
+    res.status(201).json(withComputed(product));
+  } catch (e) {
+    console.error('POST /products failed:', e);
+    res.status(500).json({ error: 'Failed to create product' });
   }
-  const product = {
-    id: randomUUID(),
-    name,
-    unit,
-    price: Number(price) || 0,
-    imageUrl: finalImage,
-    createdAt: now.toISOString(),
-    imports: [],
-    exports: [],
-    baseStock: Number(initialStock) || 0,
-    source: source === "imported" ? "imported" : "bought",
-    currency: currency === "AFN" ? "AFN" : "USD"
-  };
-  if (product.source === "imported" && initialImportQty && Number(initialImportQty) > 0) {
-    product.imports.push({ quantity: Number(initialImportQty), date: (importDate ? new Date(importDate) : now).toISOString() });
-  }
-  products.push(product);
-  storage.save('products', products);
-  res.status(201).json(withComputed(product));
 });
 
 router.patch("/:id", (req, res) => {
