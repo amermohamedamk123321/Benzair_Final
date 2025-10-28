@@ -64,26 +64,31 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.patch("/:id", (req, res) => {
-  const p = products.find((x) => x.id === req.params.id);
-  if (!p) return res.status(404).json({ error: "Product not found" });
-  const { name, unit, price, imageUrl, baseStock, source, currency } = req.body || {};
-  if (name !== undefined) p.name = name;
-  if (unit !== undefined) p.unit = unit;
-  if (price !== undefined) p.price = Number(price) || 0;
-  if (imageUrl !== undefined) {
-    let final = String(imageUrl || '');
-    if (final.startsWith('data:image/')) {
-      const saved = saveDataUrlToUploads(final);
-      if (saved) final = saved;
+router.patch("/:id", async (req, res) => {
+  try {
+    const p = products.find((x) => x.id === req.params.id);
+    if (!p) return res.status(404).json({ error: "Product not found" });
+    const { name, unit, price, imageUrl, baseStock, source, currency } = req.body || {};
+    if (name !== undefined) p.name = name;
+    if (unit !== undefined) p.unit = unit;
+    if (price !== undefined) p.price = Number(price) || 0;
+    if (imageUrl !== undefined) {
+      let final = String(imageUrl || '');
+      if (final.startsWith('data:image/')) {
+        const saved = await saveImageUpload(final);
+        if (saved) final = saved;
+      }
+      p.imageUrl = final;
     }
-    p.imageUrl = final;
+    if (baseStock !== undefined) p.baseStock = Math.max(0, Number(baseStock) || 0);
+    if (source !== undefined) p.source = source === "imported" ? "imported" : "bought";
+    if (currency !== undefined) p.currency = currency === "AFN" ? "AFN" : "USD";
+    storage.save('products', products);
+    res.json(withComputed(p));
+  } catch (e) {
+    console.error('PATCH /products/:id failed:', e);
+    res.status(500).json({ error: 'Failed to update product' });
   }
-  if (baseStock !== undefined) p.baseStock = Math.max(0, Number(baseStock) || 0);
-  if (source !== undefined) p.source = source === "imported" ? "imported" : "bought";
-  if (currency !== undefined) p.currency = currency === "AFN" ? "AFN" : "USD";
-  storage.save('products', products);
-  res.json(withComputed(p));
 });
 
 router.post("/:id/imports", (req, res) => {
