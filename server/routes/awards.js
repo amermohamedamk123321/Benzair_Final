@@ -14,17 +14,22 @@ router.get('/', (_req, res) => {
   res.json(awards);
 });
 
-router.post('/', (req, res) => {
-  let { imageUrl, title = '', description = '' } = req.body || {};
-  imageUrl = String(imageUrl || '').trim();
-  if (imageUrl.startsWith('data:image/')) {
-    const saved = saveDataUrlToUploads(imageUrl);
-    if (saved) imageUrl = saved;
+router.post('/', async (req, res) => {
+  try {
+    let { imageUrl, title = '', description = '' } = req.body || {};
+    imageUrl = String(imageUrl || '').trim();
+    if (imageUrl.startsWith('data:image/')) {
+      const saved = await saveImageUpload(imageUrl);
+      if (saved) imageUrl = saved;
+    }
+    const item = { id: randomUUID(), imageUrl, title: String(title), description: String(description) };
+    awards.push(item);
+    storage.save('awards', awards);
+    res.status(201).json(item);
+  } catch (e) {
+    console.error('POST /awards failed:', e);
+    res.status(500).json({ error: 'Failed to create award' });
   }
-  const item = { id: randomUUID(), imageUrl, title: String(title), description: String(description) };
-  awards.push(item);
-  storage.save('awards', awards);
-  res.status(201).json(item);
 });
 
 router.put('/:id', (req, res) => {
