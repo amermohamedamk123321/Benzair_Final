@@ -32,23 +32,28 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.put('/:id', (req, res) => {
-  const { id } = req.params;
-  const { imageUrl, title, description } = req.body || {};
-  const p = awards.find(a => a.id === id);
-  if (!p) return res.status(404).json({ error: 'Award not found' });
-  if (imageUrl !== undefined) {
-    let img = String(imageUrl || '').trim();
-    if (img.startsWith('data:image/')) {
-      const saved = saveDataUrlToUploads(img);
-      if (saved) img = saved;
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { imageUrl, title, description } = req.body || {};
+    const p = awards.find(a => a.id === id);
+    if (!p) return res.status(404).json({ error: 'Award not found' });
+    if (imageUrl !== undefined) {
+      let img = String(imageUrl || '').trim();
+      if (img.startsWith('data:image/')) {
+        const saved = await saveImageUpload(img);
+        if (saved) img = saved;
+      }
+      p.imageUrl = img;
     }
-    p.imageUrl = img;
+    if (title !== undefined) p.title = String(title || '');
+    if (description !== undefined) p.description = String(description || '');
+    storage.save('awards', awards);
+    res.json(p);
+  } catch (e) {
+    console.error('PUT /awards/:id failed:', e);
+    res.status(500).json({ error: 'Failed to update award' });
   }
-  if (title !== undefined) p.title = String(title || '');
-  if (description !== undefined) p.description = String(description || '');
-  storage.save('awards', awards);
-  res.json(p);
 });
 
 router.delete('/:id', (req, res) => {
