@@ -1,26 +1,9 @@
 import { Router } from "express";
 import { randomUUID } from "crypto";
-import fs from 'fs';
-import path from 'path';
 import storage from "../storage.js";
+import { saveImageUpload } from "../uploads-handler.js";
 
 const router = Router();
-const UPLOADS_DIR = path.join(process.cwd(), 'server', 'uploads');
-function ensureUploads(){ try{ fs.mkdirSync(UPLOADS_DIR, { recursive: true }); }catch(e){} }
-function saveDataUrlToUploads(dataUrl){
-  try{
-    const m = /^data:(image\/(png|jpeg|jpg|webp|gif));base64,(.+)$/.exec(dataUrl);
-    if(!m) return null;
-    const ext = m[2] === 'jpeg' ? 'jpg' : m[2];
-    const b64 = m[3];
-    const buf = Buffer.from(b64, 'base64');
-    ensureUploads();
-    const filename = `${randomUUID()}.${ext}`;
-    const p = path.join(UPLOADS_DIR, filename);
-    fs.writeFileSync(p, buf);
-    return `/uploads/${filename}`;
-  }catch(e){ console.warn('saveDataUrlToUploads failed', e); return null; }
-}
 
 // award shape: { id, imageUrl, title, description }
 let awards = storage.load('awards', []);
