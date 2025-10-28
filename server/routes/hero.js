@@ -92,21 +92,26 @@ router.put("/", (req, res) => {
   res.json(heroState);
 });
 
-router.post("/slides", (req, res) => {
-  let { url } = req.body || {};
-  if (typeof url !== "string" || !url.trim()) {
-    return res.status(400).json({ error: "url is required" });
+router.post("/slides", async (req, res) => {
+  try {
+    let { url } = req.body || {};
+    if (typeof url !== "string" || !url.trim()) {
+      return res.status(400).json({ error: "url is required" });
+    }
+    url = url.trim();
+    // If client sent a data URL, save it to server uploads and use the file path
+    if (url.startsWith('data:image/')) {
+      const saved = await saveImageUpload(url);
+      if (saved) url = saved;
+    }
+    const slide = createSlide(url);
+    heroState.slides.push(slide);
+    storage.save('hero', heroState);
+    res.status(201).json(slide);
+  } catch (e) {
+    console.error('POST /slides failed:', e);
+    res.status(500).json({ error: 'Failed to add slide' });
   }
-  url = url.trim();
-  // If client sent a data URL, save it to server uploads and use the file path
-  if (url.startsWith('data:image/')) {
-    const saved = saveDataUrlToUploads(url);
-    if (saved) url = saved;
-  }
-  const slide = createSlide(url);
-  heroState.slides.push(slide);
-  storage.save('hero', heroState);
-  res.status(201).json(slide);
 });
 
 router.delete("/slides/:id", (req, res) => {
