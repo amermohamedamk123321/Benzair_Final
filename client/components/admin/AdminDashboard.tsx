@@ -724,8 +724,12 @@ function AdminProducts() {
       const response = await fetch(input, { signal: controller.signal, ...(init || {}) });
       clearTimeout(id);
       return response;
-    } catch (err) {
-      console.warn('safeFetch failed', err);
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        console.warn(`Request timeout (${timeout}ms): ${input}`);
+      } else {
+        console.warn('safeFetch failed', err);
+      }
       return null;
     }
   };
