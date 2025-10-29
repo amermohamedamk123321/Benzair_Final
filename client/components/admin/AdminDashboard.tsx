@@ -401,7 +401,10 @@ function AdminSlideshow() {
       const res = await fetch(input, { signal: controller.signal, ...(init || {}) });
       clearTimeout(id);
       return res;
-    } catch {
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        console.warn(`Request timeout (${timeout}ms): ${input}`);
+      }
       return null;
     }
   };
