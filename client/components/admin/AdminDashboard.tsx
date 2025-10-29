@@ -578,7 +578,14 @@ function AdminAwards(){
       const res = await fetch(input, { signal: controller.signal, ...(init||{}) });
       clearTimeout(id);
       return res;
-    }catch(e){ console.warn('safeFetch failed', e); return null; }
+    }catch(err: any){
+      if (err.name === 'AbortError') {
+        console.warn(`Request timeout (${timeout}ms): ${input}`);
+      } else {
+        console.warn('safeFetch failed', err);
+      }
+      return null;
+    }
   };
 
   useEffect(()=>{
