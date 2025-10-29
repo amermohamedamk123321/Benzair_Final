@@ -8,6 +8,7 @@ import ordersRouter from "./routes/orders.js";
 import heroRouter from "./routes/hero.js";
 import awardsRouter from "./routes/awards.js";
 import adminsRouter from "./routes/admins.js";
+import uploadsRouter from "./routes/uploads.js";
 
 export function createServer() {
   const app = express();
@@ -16,9 +17,6 @@ export function createServer() {
   app.use(cors());
   app.use(express.json({ limit: '20mb' }));
   app.use(express.urlencoded({ extended: true, limit: '20mb' }));
-
-  // Serve uploaded files
-  app.use('/uploads', express.static(path.join(process.cwd(), 'server', 'uploads')));
 
   // Example API routes
   app.get("/api/ping", (_req, res) => {
@@ -34,6 +32,7 @@ export function createServer() {
   app.use("/api/hero", heroRouter);
   app.use('/api/awards', awardsRouter);
   app.use('/api/admins', adminsRouter);
+  app.use('/uploads', uploadsRouter);
 
   return app;
 }

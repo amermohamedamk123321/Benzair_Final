@@ -401,7 +401,10 @@ function AdminSlideshow() {
       const res = await fetch(input, { signal: controller.signal, ...(init || {}) });
       clearTimeout(id);
       return res;
-    } catch {
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        console.warn(`Request timeout (${timeout}ms): ${input}`);
+      }
       return null;
     }
   };
@@ -575,7 +578,14 @@ function AdminAwards(){
       const res = await fetch(input, { signal: controller.signal, ...(init||{}) });
       clearTimeout(id);
       return res;
-    }catch(e){ console.warn('safeFetch failed', e); return null; }
+    }catch(err: any){
+      if (err.name === 'AbortError') {
+        console.warn(`Request timeout (${timeout}ms): ${input}`);
+      } else {
+        console.warn('safeFetch failed', err);
+      }
+      return null;
+    }
   };
 
   useEffect(()=>{
@@ -714,8 +724,12 @@ function AdminProducts() {
       const response = await fetch(input, { signal: controller.signal, ...(init || {}) });
       clearTimeout(id);
       return response;
-    } catch (err) {
-      console.warn('safeFetch failed', err);
+    } catch (err: any) {
+      if (err.name === 'AbortError') {
+        console.warn(`Request timeout (${timeout}ms): ${input}`);
+      } else {
+        console.warn('safeFetch failed', err);
+      }
       return null;
     }
   };

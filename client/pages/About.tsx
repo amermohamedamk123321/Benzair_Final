@@ -153,7 +153,7 @@ const About: React.FC = () => {
               <div className="absolute -inset-6 rounded-full bg-gradient-to-tr from-blue-500/25 via-purple-500/20 to-blue-500/25 blur-3xl"></div>
               <div className="relative rounded-full p-3 md:p-4 bg-white/90 dark:bg-gray-900/80 border border-blue-100 dark:border-gray-700 shadow-xl">
                 <img
-                  src="../../assets/PDF.png"
+                  src="/assets/PDF.png"
                   alt="Benazir Yakta Trading Company Logo"
                   className="w-64 h-64 md:w-96 md:h-96 object-contain transition-transform duration-500 hover:scale-110"
                 />

@@ -1,26 +1,9 @@
 import { Router } from "express";
 import { randomUUID } from "crypto";
-import fs from 'fs';
-import path from 'path';
 import storage from "../storage.js";
+import { saveImageUpload } from "../uploads-handler.js";
 
 const router = Router();
-const UPLOADS_DIR = path.join(process.cwd(), 'server', 'uploads');
-function ensureUploads(){ try{ fs.mkdirSync(UPLOADS_DIR, { recursive: true }); }catch(e){} }
-function saveDataUrlToUploads(dataUrl){
-  try{
-    const m = /^data:(image\/(png|jpeg|jpg|webp|gif));base64,(.+)$/.exec(dataUrl);
-    if(!m) return null;
-    const ext = m[2] === 'jpeg' ? 'jpg' : m[2];
-    const b64 = m[3];
-    const buf = Buffer.from(b64, 'base64');
-    ensureUploads();
-    const filename = `${randomUUID()}.${ext}`;
-    const p = path.join(UPLOADS_DIR, filename);
-    fs.writeFileSync(p, buf);
-    return `/uploads/${filename}`;
-  }catch(e){ console.warn('saveDataUrlToUploads failed', e); return null; }
-}
 
 // award shape: { id, imageUrl, title, description }
 let awards = storage.load('awards', []);
@@ -31,36 +14,46 @@ router.get('/', (_req, res) => {
   res.json(awards);
 });
 
-router.post('/', (req, res) => {
-  let { imageUrl, title = '', description = '' } = req.body || {};
-  imageUrl = String(imageUrl || '').trim();
-  if (imageUrl.startsWith('data:image/')) {
-    const saved = saveDataUrlToUploads(imageUrl);
-    if (saved) imageUrl = saved;
+router.post('/', async (req, res) => {
+  try {
+    let { imageUrl, title = '', description = '' } = req.body || {};
+    imageUrl = String(imageUrl || '').trim();
+    if (imageUrl.startsWith('data:image/')) {
+      const saved = await saveImageUpload(imageUrl);
+      if (saved) imageUrl = saved;
+    }
+    const item = { id: randomUUID(), imageUrl, title: String(title), description: String(description) };
+    awards.push(item);
+    storage.save('awards', awards);
+    res.status(201).json(item);
+  } catch (e) {
+    console.error('POST /awards failed:', e);
+    res.status(500).json({ error: 'Failed to create award' });
   }
-  const item = { id: randomUUID(), imageUrl, title: String(title), description: String(description) };
-  awards.push(item);
-  storage.save('awards', awards);
-  res.status(201).json(item);
 });
 
-router.put('/:id', (req, res) => {
-  const { id } = req.params;
-  const { imageUrl, title, description } = req.body || {};
-  const p = awards.find(a => a.id === id);
-  if (!p) return res.status(404).json({ error: 'Award not found' });
-  if (imageUrl !== undefined) {
-    let img = String(imageUrl || '').trim();
-    if (img.startsWith('data:image/')) {
-      const saved = saveDataUrlToUploads(img);
-      if (saved) img = saved;
+router.put('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { imageUrl, title, description } = req.body || {};
+    const p = awards.find(a => a.id === id);
+    if (!p) return res.status(404).json({ error: 'Award not found' });
+    if (imageUrl !== undefined) {
+      let img = String(imageUrl || '').trim();
+      if (img.startsWith('data:image/')) {
+        const saved = await saveImageUpload(img);
+        if (saved) img = saved;
+      }
+      p.imageUrl = img;
     }
-    p.imageUrl = img;
+    if (title !== undefined) p.title = String(title || '');
+    if (description !== undefined) p.description = String(description || '');
+    storage.save('awards', awards);
+    res.json(p);
+  } catch (e) {
+    console.error('PUT /awards/:id failed:', e);
+    res.status(500).json({ error: 'Failed to update award' });
   }
-  if (title !== undefined) p.title = String(title || '');
-  if (description !== undefined) p.description = String(description || '');
-  storage.save('awards', awards);
-  res.json(p);
 });
 
 router.delete('/:id', (req, res) => {
