@@ -46,8 +46,12 @@ const Products: React.FC = () => {
         return res.json();
       } catch (err:any) {
         clearTimeout(t);
+        const isTimeout = err.name === 'AbortError';
         const isLast = attempt === retries;
-        if (isLast) throw err;
+        if (isLast) {
+          if (isTimeout) throw new Error(`Request timeout (${timeoutMs}ms)`);
+          throw err;
+        }
         await new Promise(r => setTimeout(r, 500));
       }
     }
