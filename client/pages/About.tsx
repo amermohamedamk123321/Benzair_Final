@@ -468,7 +468,7 @@ const About: React.FC = () => {
       <Footer />
 
       {/* Page animations */}
-      <style jsx>{`
+      <style>{`
         .reveal { opacity: 0; transform: translateY(20px); transition: opacity 600ms ease, transform 600ms ease; }
         .reveal-visible { opacity: 1; transform: translateY(0); }
       `}</style>
