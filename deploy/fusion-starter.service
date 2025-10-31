@@ -1,0 +1,27 @@
+[Unit]
+Description=Fusion Starter Node App
+After=network.target
+
+[Service]
+Type=simple
+# Replace 'www-data' with the user that will run the app on your VPS
+User=www-data
+Group=www-data
+
+# Recommended to set envs in /etc/fusion-starter.env (see README)
+EnvironmentFile=/etc/fusion-starter.env
+Environment=NODE_ENV=production
+
+# Change WorkingDirectory to the path where you clone the repository
+WorkingDirectory=/var/www/benazir-yakta
+
+# ExecStart should point to the built server entry
+ExecStart=/usr/bin/node /var/www/benazir-yakta/dist/server/node-build.mjs
+
+Restart=on-failure
+RestartSec=5
+# Increase file descriptors limit for heavy workloads
+LimitNOFILE=65536
+
+[Install]
+WantedBy=multi-user.target
