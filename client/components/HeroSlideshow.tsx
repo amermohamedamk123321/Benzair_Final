@@ -40,7 +40,6 @@ const HeroSlideshow: React.FC = () => {
         const data: HeroApi = await res.json();
         if (!mounted) return;
         const urls = (data.slides || []).map(s=>s.url).filter(Boolean);
-        // Use server-provided URLs even if empty — an empty array means "no slides"
         setImages(urls);
         setCurrentSlide(0);
         const byLang = (data.texts && data.texts[lang as 'en'|'fa']) || null;
@@ -48,7 +47,6 @@ const HeroSlideshow: React.FC = () => {
         setLoaded(true);
       } catch {
         if (!mounted) return;
-        // Do not show fallback/default images — show blank when server not available
         setImages([]);
         setCurrentSlide(0);
         setTexts(null);
@@ -78,7 +76,7 @@ const HeroSlideshow: React.FC = () => {
   }), [texts, t]);
 
   return (
-    <div className="relative h-screen overflow-hidden bg-gray-900">
+    <div className="relative min-h-[60vh] md:h-screen overflow-hidden bg-gray-900">
       {loaded && images.length > 0 && images.map((image, index) => (
         <div
           key={index}
@@ -90,8 +88,8 @@ const HeroSlideshow: React.FC = () => {
       ))}
 
       <div className={cn('relative h-full flex items-center z-10', dir==='rtl' ? 'justify-end' : 'justify-start')}>
-        <div className={cn('max-w-xl px-4 transform -translate-y-20', dir==='rtl' ? 'mr-12 text-right' : 'ml-12 text-left')}>
-          <div className={cn('group relative backdrop-blur-md bg-white/20 rounded-3xl p-10 border border-white/30 shadow-2xl hover:shadow-3xl transition-all duration-700 hover:scale-105 overflow-hidden flex flex-col justify-start mt-[100px]', dir==='rtl' ? 'items-end' : 'items-start')}>
+        <div className={cn('max-w-xl w-full px-4 sm:px-6 md:px-8 transform md:-translate-y-20 mt-12 md:mt-0 mx-auto md:mx-0', dir==='rtl' ? 'md:mr-12 text-right' : 'md:ml-12 text-center md:text-left')}>
+          <div className={cn('group relative backdrop-blur-md bg-white/20 rounded-3xl p-6 md:p-10 border border-white/30 shadow-2xl hover:shadow-3xl transition-all duration-700 hover:scale-105 overflow-hidden flex flex-col justify-start', dir==='rtl' ? 'items-end' : 'items-start')}>
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-blue-500/5 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
             <div className={cn('absolute top-4 w-4 h-4 bg-white/30 rounded-full animate-pulse', dir==='rtl' ? 'left-4' : 'right-4')}></div>
@@ -99,26 +97,26 @@ const HeroSlideshow: React.FC = () => {
             <div className={cn('absolute top-1/3 w-2 h-2 bg-purple-300/40 rounded-full animate-pulse', dir==='rtl' ? 'left-8' : 'right-8')} style={{ animationDelay: '2s' }}></div>
 
             <div className="relative z-10">
-              <h1 className={cn('text-2xl md:text-3xl font-normal text-white mb-4 drop-shadow-sm bg-clip-text', dir==='rtl' && 'text-right')}>
+              <h1 className={cn('text-2xl sm:text-3xl md:text-4xl font-normal text-white mb-4 drop-shadow-sm bg-clip-text', dir==='rtl' && 'text-right')}>
                 {shown.title}
               </h1>
 
               <div className="w-24 h-1 bg-gradient-to-r from-white via-blue-200 to-white rounded-full mb-4 opacity-80"></div>
 
-              <p className={cn('text-sm md:text-base text-white/90 mb-4 leading-relaxed', dir==='rtl' && 'text-right')}>
+              <p className={cn('text-sm sm:text-base md:text-lg text-white/90 mb-4 leading-relaxed', dir==='rtl' && 'text-right')}>
                 {shown.lead}
               </p>
 
-              <p className={cn('text-sm md:text-base text-white/80 max-w-lg leading-relaxed mb-4', dir==='rtl' && 'text-right')}>
+              <p className={cn('text-sm sm:text-base md:text-lg text-white/80 max-w-lg leading-relaxed mb-4', dir==='rtl' && 'text-right')}>
                 {shown.values}
               </p>
 
-              <p className={cn('text-sm md:text-base text-white/80 max-w-lg leading-relaxed mb-6', dir==='rtl' && 'text-right')}>
+              <p className={cn('text-sm sm:text-base md:text-lg text-white/80 max-w-lg leading-relaxed mb-6', dir==='rtl' && 'text-right')}>
                 {shown.services}
               </p>
 
               <div className={cn('flex flex-col sm:flex-row gap-4', dir==='rtl' ? 'justify-end' : 'justify-start')}>
-                <Link to="/products" className="px-8 py-4 bg-blue-900 text-white font-semibold rounded-full shadow-xl hover:shadow-2xl transition inline-flex items-center">
+                <Link to="/products" className="px-6 sm:px-8 py-3 sm:py-4 bg-blue-900 text-white font-semibold rounded-full shadow-xl hover:shadow-2xl transition inline-flex items-center">
                   <div className={cn('relative z-10 flex items-center', dir==='rtl' ? 'space-x-reverse space-x-2' : 'space-x-2')}>
                     {dir==='rtl' && (
                       <svg className="w-4 h-4 transform group-hover/btn:-translate-x-1 transition-transform duration-300" fill="currentColor" viewBox="0 0 20 20">
@@ -134,7 +132,7 @@ const HeroSlideshow: React.FC = () => {
                   </div>
                 </Link>
 
-                <Link to="/contact" className="group/btn relative px-8 py-4 border-2 border-white text-white font-semibold rounded-full overflow-hidden transition-all duration-300 transform hover:scale-105 inline-flex items-center justify-center">
+                <Link to="/contact" className="group/btn relative px-6 sm:px-8 py-3 sm:py-4 border-2 border-white text-white font-semibold rounded-full overflow-hidden transition-all duration-300 transform hover:scale-105 inline-flex items-center justify-center">
                   <div className={cn('absolute inset-0 bg-white transform scale-x-0 group-hover/btn:scale-x-100 transition-transform duration-300', dir==='rtl' ? 'origin-right' : 'origin-left')}></div>
                   <div className={cn('relative z-10 flex items-center group-hover/btn:text-blue-600 transition-colors duration-300', dir==='rtl' ? 'space-x-reverse space-x-2' : 'space-x-2')}>
                     {dir==='rtl' && (
@@ -158,7 +156,7 @@ const HeroSlideshow: React.FC = () => {
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20">
+      <div className="absolute bottom-6 md:bottom-8 left-1/2 transform -translate-x-1/2 z-20">
         {loaded && images.length > 0 ? (
           <div className="flex space-x-3">
             {images.map((_, index) => (
@@ -176,19 +174,19 @@ const HeroSlideshow: React.FC = () => {
         <>
           <button
             onClick={() => images.length && goToSlide((currentSlide - 1 + images.length) % images.length)}
-            className={cn('absolute top-1/2 transform -translate-y-1/2 p-3 text-white bg-black bg-opacity-30 hover:bg-opacity-50 rounded-full transition-all duration-300 hover:scale-110 z-20', dir==='rtl' ? 'right-6' : 'left-6')}
+            className={cn('absolute top-1/2 transform -translate-y-1/2 p-2 sm:p-3 text-white bg-black bg-opacity-30 hover:bg-opacity-50 rounded-full transition-all duration-300 hover:scale-110 z-20', dir==='rtl' ? 'right-4 sm:right-6' : 'left-4 sm:left-6')}
             aria-label="Previous slide"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={dir==='rtl' ? "M9 5l7 7-7 7" : "M15 19l-7-7 7-7"} />
             </svg>
           </button>
           <button
             onClick={() => images.length && goToSlide((currentSlide + 1) % images.length)}
-            className={cn('absolute top-1/2 transform -translate-y-1/2 p-3 text-white bg-black bg-opacity-30 hover:bg-opacity-50 rounded-full transition-all duration-300 hover:scale-110 z-20', dir==='rtl' ? 'left-6' : 'right-6')}
+            className={cn('absolute top-1/2 transform -translate-y-1/2 p-2 sm:p-3 text-white bg-black bg-opacity-30 hover:bg-opacity-50 rounded-full transition-all duration-300 hover:scale-110 z-20', dir==='rtl' ? 'left-4 sm:left-6' : 'right-4 sm:right-6')}
             aria-label="Next slide"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={dir==='rtl' ? "M15 19l-7-7 7-7" : "M9 5l7 7-7 7"} />
             </svg>
           </button>

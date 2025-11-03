@@ -1,41 +1,23 @@
-import { Router } from "express";
-import { getImageUpload } from "../uploads-handler.js";
+import { Router } from 'express';
 import fs from 'fs';
 import path from 'path';
 
 const router = Router();
-
-const isNetlifyEnvironment = !!process.env.NETLIFY || !!process.env.NETLIFY_BUILD_BASE;
 const UPLOADS_DIR = path.join(process.cwd(), 'server', 'uploads');
 
-// Serve uploaded images
 router.get('/:filename', async (req, res) => {
   try {
     const { filename } = req.params;
-
-    // Security: prevent directory traversal
     if (filename.includes('..') || filename.includes('/')) {
       return res.status(400).json({ error: 'Invalid filename' });
     }
 
-    let buffer;
-
-    if (isNetlifyEnvironment) {
-      // Netlify: retrieve from Blobs
-      buffer = await getImageUpload(filename);
-      if (!buffer) {
-        return res.status(404).json({ error: 'Upload not found' });
-      }
-    } else {
-      // Local development: read from file system
-      const filepath = path.join(UPLOADS_DIR, filename);
-      if (!fs.existsSync(filepath)) {
-        return res.status(404).json({ error: 'Upload not found' });
-      }
-      buffer = fs.readFileSync(filepath);
+    const filepath = path.join(UPLOADS_DIR, filename);
+    if (!fs.existsSync(filepath)) {
+      return res.status(404).json({ error: 'Upload not found' });
     }
+    const buffer = fs.readFileSync(filepath);
 
-    // Determine content type from filename
     const ext = path.extname(filename).toLowerCase();
     const contentTypes = {
       '.webp': 'image/webp',

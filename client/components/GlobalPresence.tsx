@@ -240,7 +240,7 @@ const GlobalPresence: React.FC = () => {
       </div>
 
       {/* Custom Animations */}
-      <style jsx>{`
+      <style>{`
         @keyframes fadeInUp {
           from {
             transform: translateY(30px);
@@ -251,7 +251,7 @@ const GlobalPresence: React.FC = () => {
             opacity: 1;
           }
         }
-        
+
         @keyframes fadeIn {
           from {
             opacity: 0;
@@ -262,11 +262,11 @@ const GlobalPresence: React.FC = () => {
             transform: translate(-50%, -50%) scale(1);
           }
         }
-        
+
         .animate-fadeInUp {
           animation: fadeInUp 0.8s ease-out forwards;
         }
-        
+
         .animate-fadeIn {
           animation: fadeIn 0.3s ease-out forwards;
         }
