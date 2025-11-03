@@ -79,16 +79,16 @@ function FeaturedCategoriesGrid(){
     <div className="grid md:grid-cols-3 gap-8">
       {categories.map((category, index) => (
         <div key={index} className="group relative overflow-visible rounded-2xl transition-all duration-500 bg-white dark:bg-gray-800">
-          <div className="relative h-72 overflow-hidden rounded-2xl shadow-lg">
+          <div className="relative h-56 md:h-72 overflow-hidden rounded-2xl shadow-lg">
             <img src={category.image} alt={category.title ? category.title : t(`${category.key}.title`)} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
           </div>
 
           <div className="relative">
-            <div className="absolute left-6 rounded-xl px-6 py-4 max-w-xs" style={{ bottom: '-60px', left: '24px' }}>
-              <div style={{position:'relative', overflow:'hidden'}} className="bg-white/50 dark:bg-gray-800/70 backdrop-blur-md border border-white/20 dark:border-gray-700 shadow-lg rounded-xl text-gray-900 dark:text-gray-100 px-6 py-4">
+            <div className="md:absolute md:left-[24px] md:-bottom-[60px] static w-full md:max-w-xs px-4 sm:px-6">
+              <div style={{position:'relative', overflow:'hidden'}} className="bg-white/50 dark:bg-gray-800/70 backdrop-blur-md border border-white/20 dark:border-gray-700 shadow-lg rounded-xl text-gray-900 dark:text-gray-100 px-4 sm:px-6 py-4">
                 <div style={{position:'absolute', inset:0, pointerEvents:'none', background: 'radial-gradient(1200px 200px at 10% 10%, rgba(255,255,255,0.04), transparent 20%), linear-gradient(180deg, rgba(255,255,255,0.02), transparent 40%)'}} />
-                <h3 className="text-2xl text-gray-900 dark:text-gray-100">{t(`${category.key}.title`)}</h3>
+                <h3 className="text-xl md:text-2xl text-gray-900 dark:text-gray-100">{t(`${category.key}.title`)}</h3>
                               </div>
             </div>
           </div>
@@ -155,7 +155,7 @@ const Index: React.FC = () => {
       <TransportationSection />
 
       {/* About Section */}
-      <section className="py-20 bg-gradient-to-br from-blue-50 to-white dark:from-gray-800 dark:to-gray-900 relative overflow-hidden">
+      <section className="py-12 md:py-20 bg-gradient-to-br from-blue-50 to-white dark:from-gray-800 dark:to-gray-900 relative overflow-hidden">
         {/* Animated background elements */}
         <div className="absolute top-0 right-0 w-72 h-72 bg-gradient-to-br from-blue-200/30 to-purple-200/30 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-tr from-green-200/20 to-blue-200/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '3s' }}></div>
@@ -164,18 +164,18 @@ const Index: React.FC = () => {
           <div className="max-w-4xl mx-auto text-center">
             {/* Enhanced header */}
             <div className="mb-8">
-              <div className={cn('inline-flex items-center space-x-3 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 px-6 py-3 rounded-full mb-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105', { 'space-x-reverse': dir==='rtl' })}>
+              <div className={cn('inline-flex items-center space-x-3 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 px-4 sm:px-6 py-3 rounded-full mb-6 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105', { 'space-x-reverse': dir==='rtl' })}>
                 <span className="text-2xl animate-bounce">🌱</span>
                 <span className="text-blue-700 font-semibold">{t('ourStory')}</span>
               </div>
-              <h2 className={cn('text-4xl md:text-6xl font-bold text-gray-800 dark:text-gray-200 mb-6 bg-gradient-to-r from-gray-800 dark:from-gray-200 via-blue-600 to-purple-600 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300', dir==='rtl' ? 'text-right' : 'text-center')}>
+              <h2 className={cn('text-3xl sm:text-4xl md:text-6xl font-bold text-gray-800 dark:text-gray-200 mb-6 bg-gradient-to-r from-gray-800 dark:from-gray-200 via-blue-600 to-purple-600 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300', dir==='rtl' ? 'text-right' : 'text-center')}>
                 {t('about.company.heading')}
               </h2>
               <div className="w-40 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 mx-auto rounded-full animate-pulse"></div>
             </div>
 
             {/* Enhanced content card */}
-            <div className="group relative backdrop-blur-sm bg-white/80 dark:bg-gray-800/80 rounded-3xl p-8 md:p-12 border border-blue-100 dark:border-gray-700 shadow-2xl hover:shadow-3xl transition-all duration-700 hover:scale-105 overflow-hidden">
+            <div className="group relative backdrop-blur-sm bg-white/80 dark:bg-gray-800/80 rounded-3xl p-6 md:p-12 border border-blue-100 dark:border-gray-700 shadow-2xl hover:shadow-3xl transition-all duration-700 hover:scale-105 overflow-hidden">
               {/* Animated background gradient */}
               <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-purple-50/30 to-pink-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
@@ -186,18 +186,18 @@ const Index: React.FC = () => {
 
               {/* Content */}
               <div className="relative z-10">
-                <p className={cn('text-lg md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-8 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors duration-300', dir==='rtl' && 'text-right')}>
+                <p className={cn('text-base md:text-xl text-gray-700 dark:text-gray-300 leading-relaxed mb-8 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors duration-300', dir==='rtl' && 'text-right')}>
                   {t('about.lead')}
                 </p>
                 <div className="grid md:grid-cols-2 gap-6 text-left">
-                  <div className="bg-gradient-to-br from-blue-50 to-white dark:from-gray-700 dark:to-gray-800 p-6 rounded-2xl border border-blue-100 dark:border-gray-600 shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                  <div className="bg-gradient-to-br from-blue-50 to-white dark:from-gray-700 dark:to-gray-800 p-4 sm:p-6 rounded-2xl border border-blue-100 dark:border-gray-600 shadow-lg group-hover:shadow-xl transition-shadow duration-300">
                     <div className="flex items-center mb-3">
                       <span className="text-2xl mr-3">👥</span>
                       <span className="font-semibold text-blue-700 dark:text-blue-400">{t('ourTeam')}</span>
                     </div>
                     <p className="text-gray-600 dark:text-gray-300">{t('ourTeam.desc')}</p>
                   </div>
-                  <div className="bg-gradient-to-br from-purple-50 to-white dark:from-gray-700 dark:to-gray-800 p-6 rounded-2xl border border-purple-100 dark:border-gray-600 shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                  <div className="bg-gradient-to-br from-purple-50 to-white dark:from-gray-700 dark:to-gray-800 p-4 sm:p-6 rounded-2xl border border-purple-100 dark:border-gray-600 shadow-lg group-hover:shadow-xl transition-shadow duration-300">
                     <div className="flex items-center mb-3">
                       <span className="text-2xl mr-3">🏢</span>
                       <span className="font-semibold text-purple-700 dark:text-purple-400">{t('ourFacility')}</span>
@@ -215,30 +215,30 @@ const Index: React.FC = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-white dark:bg-gray-900 relative overflow-hidden">
+      <section className="py-16 md:py-20 bg-white dark:bg-gray-900 relative overflow-hidden">
         {/* Animated background elements */}
         <div className="absolute top-0 left-0 w-64 h-64 bg-blue-100 rounded-full blur-3xl opacity-30 animate-pulse"></div>
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-100 rounded-full blur-3xl opacity-20 animate-pulse" style={{ animationDelay: '2s' }}></div>
 
         <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center space-x-2 bg-blue-100 dark:bg-blue-900/30 px-6 py-2 rounded-full mb-6 transform hover:scale-105 transition-transform duration-300">
+          <div className="text-center mb-12 md:mb-16">
+            <div className="inline-flex items-center space-x-2 bg-blue-100 dark:bg-blue-900/30 px-4 sm:px-6 py-2 rounded-full mb-6 transform hover:scale-105 transition-transform duration-300">
               <span className="text-2xl animate-bounce">⭐</span>
               <span className="text-blue-700 font-semibold">{t('excellence')}</span>
             </div>
-            <h2 className={cn('text-4xl md:text-5xl font-bold text-gray-800 dark:text-gray-200 mb-6 transform hover:scale-105 transition-transform duration-300', dir==='rtl' ? 'text-right' : 'text-center')}>
+            <h2 className={cn('text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 dark:text-gray-200 mb-6 transform hover:scale-105 transition-transform duration-300', dir==='rtl' ? 'text-right' : 'text-center')}>
               {t('whyChooseUs')}
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full animate-pulse"></div>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {features.map((feature, index) => (
               <div
                 key={index}
                 className="text-center group transform hover:-translate-y-3 transition-all duration-500"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="relative backdrop-blur-sm bg-gradient-to-br from-blue-50 to-white dark:from-gray-800/80 dark:to-gray-800/60 rounded-2xl p-8 shadow-lg border border-blue-100 dark:border-gray-700 hover:shadow-2xl hover:border-blue-300 dark:hover:border-gray-500 transition-all duration-500 overflow-hidden">
+                <div className="relative backdrop-blur-sm bg-gradient-to-br from-blue-50 to-white dark:from-gray-800/80 dark:to-gray-800/60 rounded-2xl p-6 sm:p-8 shadow-lg border border-blue-100 dark:border-gray-700 hover:shadow-2xl hover:border-blue-300 dark:hover:border-gray-500 transition-all duration-500 overflow-hidden">
                   {/* Animated background gradient */}
                   <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
@@ -267,18 +267,18 @@ const Index: React.FC = () => {
       </section>
 
       {/* Product Categories */}
-      <section className="py-20 bg-gradient-to-br from-white to-blue-50 dark:from-gray-900 dark:to-gray-800 relative overflow-hidden">
+      <section className="py-16 md:py-20 bg-gradient-to-br from-white to-blue-50 dark:from-gray-900 dark:to-gray-800 relative overflow-hidden">
         {/* Animated background patterns */}
         <div className="absolute top-10 left-10 w-32 h-32 border-2 border-blue-200 rounded-full animate-spin" style={{ animationDuration: '20s' }}></div>
         <div className="absolute bottom-10 right-10 w-24 h-24 border-2 border-purple-200 rounded-full animate-spin" style={{ animationDuration: '15s', animationDirection: 'reverse' }}></div>
 
         <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 px-6 py-2 rounded-full mb-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <div className="text-center mb-12 md:mb-16">
+            <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-100 to-purple-100 dark:from-blue-900/30 dark:to-purple-900/30 px-4 sm:px-6 py-2 rounded-full mb-6 shadow-lg hover:shadow-xl transition-shadow duration-300">
               <span className="text-2xl animate-pulse">🏆</span>
               <span className="text-blue-700 font-semibold">{t('premiumQuality')}</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-800 dark:text-gray-200 mb-6 bg-gradient-to-r from-gray-800 dark:from-gray-200 via-blue-600 to-gray-800 dark:to-gray-200 bg-clip-text text-transparent">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 dark:text-gray-200 mb-6 bg-gradient-to-r from-gray-800 dark:from-gray-200 via-blue-600 to-gray-800 dark:to-gray-200 bg-clip-text text-transparent">
               {t('ourProductCategories')}
             </h2>
             <div className="w-32 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-500 mx-auto rounded-full animate-pulse"></div>
@@ -292,7 +292,7 @@ const Index: React.FC = () => {
       <GlobalPresence />
 
       {/* Call to Action */}
-      <section className="py-20 bg-white text-slate-800 dark:bg-gradient-to-br dark:from-blue-900 dark:via-blue-950 dark:to-slate-950 dark:text-white relative overflow-hidden">
+      <section className="py-12 md:py-20 bg-white text-slate-800 dark:bg-gradient-to-br dark:from-blue-900 dark:via-blue-950 dark:to-slate-950 dark:text-white relative overflow-hidden">
 
         {/* Floating particles */}
         <div className="absolute top-10 left-10 w-2 h-2 bg-white/30 rounded-full animate-ping"></div>
@@ -301,7 +301,7 @@ const Index: React.FC = () => {
 
         <div className="container mx-auto px-6 text-center relative z-10">
           <div className="max-w-4xl mx-auto">
-            <div className="group relative backdrop-blur-md bg-white rounded-3xl p-12 border border-slate-200 shadow-2xl overflow-hidden dark:bg-blue-900/30 dark:border-blue-900/40">
+            <div className="group relative backdrop-blur-md bg-white rounded-3xl p-6 md:p-12 border border-slate-200 shadow-2xl overflow-hidden dark:bg-blue-900/30 dark:border-blue-900/40">
               {/* Enhanced background effects */}
 
               {/* Animated decorative rings */}
@@ -312,23 +312,23 @@ const Index: React.FC = () => {
               <div className="relative z-10">
                 {/* Header with icon */}
                 <div className="mb-8">
-                  <div className="inline-flex items-center space-x-3 bg-blue-100 text-blue-900 backdrop-blur-lg px-6 py-3 rounded-full mb-6 dark:bg-blue-900/40 dark:text-white">
+                  <div className="inline-flex items-center space-x-3 bg-blue-100 text-blue-900 backdrop-blur-lg px-4 sm:px-6 py-3 rounded-full mb-6 dark:bg-blue-900/40 dark:text-white">
                     <span className="text-2xl animate-bounce">🚀</span>
                     <span className="text-custom-purple font-semibold">{t('cta.letsConnect')}</span>
                   </div>
-                  <h2 className="text-4xl md:text-5xl font-bold mb-6 text-slate-900 dark:text-white">
+                  <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-slate-900 dark:text-white">
                     {t('cta.readyTitle')}
                   </h2>
                   <div className="w-32 h-1 bg-blue-300 mx-auto rounded-full"></div>
                 </div>
 
-                <p className="text-xl md:text-2xl text-slate-600 mb-10 leading-relaxed dark:text-blue-200">
+                <p className="text-base sm:text-lg md:text-xl text-slate-600 mb-8 md:mb-10 leading-relaxed dark:text-blue-200">
                   {t('cta.readyLead')}
                 </p>
 
                 {/* Enhanced buttons */}
-                <div className="flex flex-col sm:flex-row gap-6 justify-center">
-                  <Link to="/contact" className="px-8 py-4 bg-blue-900 text-white font-semibold rounded-full shadow-xl hover:shadow-2xl transition inline-flex items-center justify-center dark:bg-white dark:text-blue-900">
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center">
+                  <Link to="/contact" className="px-6 sm:px-8 py-3 sm:py-4 bg-blue-900 text-white font-semibold rounded-full shadow-xl hover:shadow-2xl transition inline-flex items-center justify-center dark:bg-white dark:text-blue-900">
                     <span className="relative z-10 flex items-center space-x-2">
                       <span>{t('getInTouch')}</span>
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -337,7 +337,7 @@ const Index: React.FC = () => {
                     </span>
                   </Link>
 
-                  <Link to="/products" className="px-8 py-4 border-2 border-blue-900 text-blue-900 font-semibold rounded-full transition inline-flex items-center justify-center dark:border-white dark:text-white">
+                  <Link to="/products" className="px-6 sm:px-8 py-3 sm:py-4 border-2 border-blue-900 text-blue-900 font-semibold rounded-full transition inline-flex items-center justify-center dark:border-white dark:text-white">
                     <span className="relative z-10 flex items-center space-x-2">
                       <span>{t('viewProduct')}</span>
                       <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
