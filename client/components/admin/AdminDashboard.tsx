@@ -122,11 +122,32 @@ const AdminDashboard: React.FC = () => {
 
   const handleSave = async () => {
     setIsSaving(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    localStorage.setItem('website-content', JSON.stringify(contentData));
-    setIsSaving(false);
-    setSaveSuccess(true);
-    setTimeout(() => setSaveSuccess(false), 3000);
+    try {
+      // Save to server
+      const res = await fetch('/api/content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(contentData)
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to save to server');
+      }
+
+      // Also save to localStorage for offline access
+      localStorage.setItem('website-content', JSON.stringify(contentData));
+
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } catch (error) {
+      console.error('Save error:', error);
+      // Still try to save to localStorage as fallback
+      localStorage.setItem('website-content', JSON.stringify(contentData));
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const tabs = [
