@@ -200,7 +200,7 @@ const GlobalPresence: React.FC = () => {
 
           {/* Country Showcase Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {countries.filter(c => ['countries.india.name','countries.dubai.name','countries.france.name','countries.switzerland.name','countries.uk.name'].includes(c.nameKey)).map((country, index) => (
+            {countries.filter(c => ['countries.india.name','countries.dubai.name','countries.france.name','countries.switzerland.name','countries.uk.name','countries.australia.name'].includes(c.nameKey)).map((country, index) => (
               <div
                 key={country.nameKey}
                 className={`group relative overflow-hidden rounded-2xl bg-white dark:bg-white/5 backdrop-blur-lg border border-blue-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/30 transition-all duration-500 hover:scale-105 hover:-translate-y-2 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`}
