@@ -9,6 +9,7 @@ import heroRouter from "./routes/hero.js";
 import awardsRouter from "./routes/awards.js";
 import adminsRouter from "./routes/admins.js";
 import uploadsRouter from "./routes/uploads.js";
+import contentRouter from "./routes/content.js";
 
 export function createServer() {
   const app = express();
