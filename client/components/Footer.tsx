@@ -83,7 +83,7 @@ const Footer: React.FC = () => {
               <h4 className="text-lg font-semibold mb-3">{t('contact.tag')}</h4>
               <ul className="space-y-2 text-blue-100">
                 <li><a href="mailto:Benaziryakta@gmail.com">Benaziryakta@gmail.com</a></li>
-                <li><a href="tel:+9377101070">+93 77 10 10 70</a></li>
+                <li><a href="tel:+9377310107">+93 77 310 1070</a></li>
               </ul>
               <div className="mt-6 contact-qr-section">
                 <div className="inline-flex items-center justify-center bg-white p-3 rounded-xl shadow-lg">
