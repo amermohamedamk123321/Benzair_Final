@@ -75,7 +75,30 @@ const About: React.FC = () => {
   const [profileDocument, setProfileDocument] = useState<{ name: string; url: string } | null>(null);
 
   useEffect(() => {
-    const loadProfileDocument = () => {
+    const loadProfileDocument = async () => {
+      try {
+        // Try to load from server first
+        const res = await fetch('/api/content');
+        if (res.ok) {
+          const parsed = await res.json();
+          if (parsed.profileDocumentData && parsed.profileDocumentName) {
+            setProfileDocument({
+              name: String(parsed.profileDocumentName),
+              url: String(parsed.profileDocumentData)
+            });
+            // Cache to localStorage
+            try {
+              localStorage.setItem('website-content', JSON.stringify(parsed));
+            } catch {}
+            return;
+          } else {
+            setProfileDocument(null);
+            return;
+          }
+        }
+      } catch {}
+
+      // Fallback to localStorage if server request fails
       try {
         const stored = localStorage.getItem('website-content');
         if (!stored) {
