@@ -8,19 +8,44 @@ const Footer: React.FC = () => {
   const { t, dir } = useLocale() as any;
   const [links, setLinks] = useState<{ instagram?: string; facebook?: string; whatsapp?: string; twitter?: string; linkedin?: string }>({});
   useEffect(()=>{
-    try {
-      const s = localStorage.getItem('website-content');
-      if (s) {
-        const d = JSON.parse(s);
-        setLinks({
-          instagram: d.instagramUrl || '',
-          facebook: d.facebookUrl || '',
-          whatsapp: d.whatsappUrl || '',
-          twitter: d.twitterUrl || '',
-          linkedin: d.linkedinUrl || ''
-        });
-      }
-    } catch {}
+    const loadLinks = async () => {
+      try {
+        // Try to load from server first
+        const res = await fetch('/api/content');
+        if (res.ok) {
+          const d = await res.json();
+          setLinks({
+            instagram: d.instagramUrl || '',
+            facebook: d.facebookUrl || '',
+            whatsapp: d.whatsappUrl || '',
+            twitter: d.twitterUrl || '',
+            linkedin: d.linkedinUrl || ''
+          });
+          // Cache to localStorage
+          try {
+            localStorage.setItem('website-content', JSON.stringify(d));
+          } catch {}
+          return;
+        }
+      } catch {}
+
+      // Fallback to localStorage if server request fails
+      try {
+        const s = localStorage.getItem('website-content');
+        if (s) {
+          const d = JSON.parse(s);
+          setLinks({
+            instagram: d.instagramUrl || '',
+            facebook: d.facebookUrl || '',
+            whatsapp: d.whatsappUrl || '',
+            twitter: d.twitterUrl || '',
+            linkedin: d.linkedinUrl || ''
+          });
+        }
+      } catch {}
+    };
+
+    loadLinks();
   },[]);
 
   return (
