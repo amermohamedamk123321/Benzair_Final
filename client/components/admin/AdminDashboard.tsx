@@ -41,51 +41,93 @@ const fetchImageAsDataUrl = async (url: string, timeout = 10000): Promise<string
 
 const createTempId = () => 'temp-' + String(Date.now()) + '-' + Math.random().toString(36).slice(2, 8);
 
+const defaultContentData: ContentData = {
+  heroTitle: 'Premium Afghan Dried Fruits',
+  heroSubtitle: 'Sourced directly from contracted farmers across Afghanistan',
+  aboutText: 'Benazir Yakta Trading Company is a pioneering women-led Afghan exporter specializing in premium dried fruits, nuts, and spices.',
+  companyDescription: 'Premium Afghan dried fruits, nuts, and spices. Empowering women, supporting communities.',
+  contactEmail: 'info@benaziryakta.com',
+  contactAddress: 'Shahrak-e-Omid Sabz, Kabul, Afghanistan',
+  instagramUrl: '',
+  facebookUrl: '',
+  whatsappUrl: '',
+  twitterUrl: '',
+  linkedinUrl: '',
+  profileDocumentName: '',
+  profileDocumentData: ''
+};
+
 const AdminDashboard: React.FC = () => {
   const { user, logout } = useAuth();
   const { t, dir } = useLocale();
   const [activeTab, setActiveTab] = useState<string>('products');
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
+  const [contentLoading, setContentLoading] = useState<boolean>(true);
 
-  const [contentData, setContentData] = useState<ContentData>(() => {
-    try {
-      const saved = localStorage.getItem('website-content');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        return {
-          heroTitle: parsed.heroTitle || 'Premium Afghan Dried Fruits',
-          heroSubtitle: parsed.heroSubtitle || 'Sourced directly from contracted farmers across Afghanistan',
-          aboutText: parsed.aboutText || 'Benazir Yakta Trading Company is a pioneering women-led Afghan exporter specializing in premium dried fruits, nuts, and spices.',
-          companyDescription: parsed.companyDescription || 'Premium Afghan dried fruits, nuts, and spices. Empowering women, supporting communities.',
-          contactEmail: parsed.contactEmail || 'info@benaziryakta.com',
-          contactAddress: parsed.contactAddress || 'Shahrak-e-Omid Sabz, Kabul, Afghanistan',
-          instagramUrl: parsed.instagramUrl || '',
-          facebookUrl: parsed.facebookUrl || '',
-          whatsappUrl: parsed.whatsappUrl || '',
-          twitterUrl: parsed.twitterUrl || '',
-          linkedinUrl: parsed.linkedinUrl || '',
-          profileDocumentName: parsed.profileDocumentName || '',
-          profileDocumentData: parsed.profileDocumentData || ''
-        } as ContentData;
+  const [contentData, setContentData] = useState<ContentData>(defaultContentData);
+
+  // Load content from server on mount
+  useEffect(() => {
+    const loadContent = async () => {
+      setContentLoading(true);
+      try {
+        const res = await fetch('/api/content');
+        if (res.ok) {
+          const data = await res.json();
+          setContentData({
+            heroTitle: data.heroTitle || defaultContentData.heroTitle,
+            heroSubtitle: data.heroSubtitle || defaultContentData.heroSubtitle,
+            aboutText: data.aboutText || defaultContentData.aboutText,
+            companyDescription: data.companyDescription || defaultContentData.companyDescription,
+            contactEmail: data.contactEmail || defaultContentData.contactEmail,
+            contactAddress: data.contactAddress || defaultContentData.contactAddress,
+            instagramUrl: data.instagramUrl || '',
+            facebookUrl: data.facebookUrl || '',
+            whatsappUrl: data.whatsappUrl || '',
+            twitterUrl: data.twitterUrl || '',
+            linkedinUrl: data.linkedinUrl || '',
+            profileDocumentName: data.profileDocumentName || '',
+            profileDocumentData: data.profileDocumentData || ''
+          });
+          // Cache to localStorage
+          try {
+            localStorage.setItem('website-content', JSON.stringify(data));
+          } catch {}
+          return;
+        }
+      } catch (e) {
+        console.warn('Failed to load content from server:', e);
       }
-    } catch {}
-    return {
-      heroTitle: 'Premium Afghan Dried Fruits',
-      heroSubtitle: 'Sourced directly from contracted farmers across Afghanistan',
-      aboutText: 'Benazir Yakta Trading Company is a pioneering women-led Afghan exporter specializing in premium dried fruits, nuts, and spices.',
-      companyDescription: 'Premium Afghan dried fruits, nuts, and spices. Empowering women, supporting communities.',
-      contactEmail: 'info@benaziryakta.com',
-      contactAddress: 'Shahrak-e-Omid Sabz, Kabul, Afghanistan',
-      instagramUrl: '',
-      facebookUrl: '',
-      whatsappUrl: '',
-      twitterUrl: '',
-      linkedinUrl: '',
-      profileDocumentName: '',
-      profileDocumentData: ''
-    } as ContentData;
-  });
+
+      // Fallback to localStorage
+      try {
+        const saved = localStorage.getItem('website-content');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          setContentData({
+            heroTitle: parsed.heroTitle || defaultContentData.heroTitle,
+            heroSubtitle: parsed.heroSubtitle || defaultContentData.heroSubtitle,
+            aboutText: parsed.aboutText || defaultContentData.aboutText,
+            companyDescription: parsed.companyDescription || defaultContentData.companyDescription,
+            contactEmail: parsed.contactEmail || defaultContentData.contactEmail,
+            contactAddress: parsed.contactAddress || defaultContentData.contactAddress,
+            instagramUrl: parsed.instagramUrl || '',
+            facebookUrl: parsed.facebookUrl || '',
+            whatsappUrl: parsed.whatsappUrl || '',
+            twitterUrl: parsed.twitterUrl || '',
+            linkedinUrl: parsed.linkedinUrl || '',
+            profileDocumentName: parsed.profileDocumentName || '',
+            profileDocumentData: parsed.profileDocumentData || ''
+          });
+        }
+      } catch {}
+
+      setContentLoading(false);
+    };
+
+    loadContent();
+  }, []);
 
   const handleContentChange = (field: keyof ContentData, value: string) => {
     setContentData(prev => ({ ...prev, [field]: value }));
