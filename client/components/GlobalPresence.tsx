@@ -48,6 +48,12 @@ const GlobalPresence: React.FC = () => {
       x: 43, y: 25
     },
     {
+      nameKey: 'countries.australia.name',
+      descKey: 'countries.australia.description',
+      image: 'https://cdn.builder.io/api/v1/image/assets%2F78f33eb38ebd4b05b3e8fe59c152e236%2F6e940d6a02884e73acd03fdf01698b0e?format=webp&width=800',
+      x: 88, y: 70
+    },
+    {
       nameKey: 'countries.usa.name',
       descKey: 'countries.usa.description',
       image: 'https://cdn.builder.io/api/v1/image/assets%2F13a4766942d54028b94747b6985a55d1%2Fce396255f7154c3e8c00f1eceed3dada?format=webp&width=800',
