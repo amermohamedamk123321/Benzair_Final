@@ -924,6 +924,13 @@ function AdminProducts() {
       setNewProduct({ name: '', unit: 'kg', price: 0, currency: 'USD', source: 'bought', initialImportQty: 0, initialStock: 0, importDate: '', imageUrl: '', recent: false });
       await load();
     } catch (e:any) {
+      // If server request fails and we're offline, reject if image is still a data URL
+      if (newProduct.imageUrl && newProduct.imageUrl.startsWith('data:image/')) {
+        setModalError('You are offline. Please upload an image while connected to the internet, or retry when connection is available.');
+        setCreating(false);
+        return;
+      }
+
       const id = (window.crypto && 'randomUUID' in window.crypto) ? (window.crypto as any).randomUUID() : String(Date.now());
       const now = new Date().toISOString();
       const product:any = {
