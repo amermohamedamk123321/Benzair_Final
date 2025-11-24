@@ -1218,6 +1218,24 @@ function ProductEditor({ product, onSaved, onError }:{ product:any; onSaved:()=>
     });
   };
 
+  const uploadImageToServer = async (dataUrl: string): Promise<string> => {
+    try {
+      const res = await fetch('/uploads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dataUrl }),
+        signal: AbortSignal.timeout ? AbortSignal.timeout(8000) : undefined
+      });
+      if (res && res.ok) {
+        const data = await res.json();
+        return data.url;
+      }
+    } catch (e) {
+      console.warn('Image upload failed, will use data URL', e);
+    }
+    return dataUrl;
+  };
+
   const onPickImage = async (file?: File | null) => {
     if (!file) return;
     try {
