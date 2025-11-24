@@ -1263,7 +1263,9 @@ function ProductEditor({ product, onSaved, onError }:{ product:any; onSaved:()=>
         const res = await p;
         return res || await readFileAsDataUrl(file);
       })();
-      setForm(f => ({ ...f, imageUrl: dataUrl }));
+      // Try to upload to server
+      const finalUrl = await uploadImageToServer(dataUrl);
+      setForm(f => ({ ...f, imageUrl: finalUrl }));
     } catch (e:any) {
       onError?.(e?.message || 'Failed to process image');
     }
