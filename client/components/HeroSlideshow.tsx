@@ -76,7 +76,7 @@ const HeroSlideshow: React.FC = () => {
   }), [texts, t]);
 
   return (
-    <div className="relative min-h-[60vh] md:h-screen overflow-hidden bg-gray-900">
+    <div className="relative min-h-[75vh] md:h-screen overflow-hidden bg-gray-900">
       {loaded && images.length > 0 && images.map((image, index) => (
         <div
           key={index}
