@@ -866,7 +866,24 @@ function AdminProducts() {
   const onPickNewImage = async (file?: File | null) => {
     if (!file) return;
     const dataUrl = await compressImage(file);
-    setNewProduct(p => ({ ...p, imageUrl: dataUrl }));
+    // Try to upload to server immediately
+    try {
+      const res = await safeFetch('/uploads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dataUrl })
+      });
+      if (res && res.ok) {
+        const data = await res.json();
+        setNewProduct(p => ({ ...p, imageUrl: data.url }));
+      } else {
+        // Fallback: use data URL for now, will be uploaded with product
+        setNewProduct(p => ({ ...p, imageUrl: dataUrl }));
+      }
+    } catch (e) {
+      // Offline or network error: use data URL for preview
+      setNewProduct(p => ({ ...p, imageUrl: dataUrl }));
+    }
   };
 
   const createProduct = async () => {
