@@ -156,7 +156,7 @@ const HeroSlideshow: React.FC = () => {
         </div>
       </div>
 
-      <div className="fixed bottom-6 md:bottom-8 md:absolute left-1/2 transform -translate-x-1/2 z-20 md:z-20">
+      <div className="absolute bottom-8 md:bottom-8 left-1/2 transform -translate-x-1/2 z-20">
         {loaded && images.length > 0 ? (
           <div className="flex space-x-3">
             {images.map((_, index) => (
