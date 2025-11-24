@@ -18,6 +18,14 @@
       {
         "at": "2025-10-15T20:58:49.129Z",
         "status": "completed"
+      },
+      {
+        "at": "2025-11-24T12:11:01.317Z",
+        "status": "approved"
+      },
+      {
+        "at": "2025-11-24T12:11:03.022Z",
+        "status": "completed"
       }
     ],
     "_exportApplied": true
@@ -54,7 +62,7 @@
     "customerEmail": "Kiliking@gmail.com",
     "destination": "New York, America",
     "notes": "can you send this via air transportation.",
-    "status": "completed",
+    "status": "cancelled",
     "createdAt": "2025-10-15T20:58:05.007Z",
     "history": [
       {
@@ -64,6 +72,10 @@
       {
         "at": "2025-10-15T20:58:53.063Z",
         "status": "completed"
+      },
+      {
+        "at": "2025-11-24T12:11:05.570Z",
+        "status": "cancelled"
       }
     ],
     "_exportApplied": true
