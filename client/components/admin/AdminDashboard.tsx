@@ -1,6 +1,7 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLocale } from '@/hooks/useLocale';
+import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 interface ContentData {
@@ -60,6 +61,7 @@ const defaultContentData: ContentData = {
 const AdminDashboard: React.FC = () => {
   const { user, logout } = useAuth();
   const { t, dir } = useLocale();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<string>('products');
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
@@ -67,7 +69,7 @@ const AdminDashboard: React.FC = () => {
 
   const [contentData, setContentData] = useState<ContentData>(defaultContentData);
 
-  // Load content from server on mount
+  // Load content from server on mount, fallback to localStorage
   useEffect(() => {
     const loadContent = async () => {
       setContentLoading(true);
@@ -150,9 +152,44 @@ const AdminDashboard: React.FC = () => {
 
   const handleProfileFileInput = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
-    handleProfileUpload(file);
+    if (file) {
+      handleProfileUpload(file);
+    }
     event.target.value = '';
   };
+
+  // Auto-save to localStorage on content change (debounced)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      try {
+        localStorage.setItem('website-content', JSON.stringify(contentData));
+      } catch (err) {
+        console.warn('Failed to save to localStorage:', err);
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [contentData]);
+
+  // Load from localStorage on mount if server data not available
+  useEffect(() => {
+    const loadFromLocalStorage = () => {
+      try {
+        const stored = localStorage.getItem('website-content');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          // Only use localStorage data if server hasn't loaded yet
+          setContentData(prev => ({
+            ...prev,
+            ...parsed
+          }));
+        }
+      } catch (err) {
+        console.warn('Failed to load from localStorage:', err);
+      }
+    };
+
+    loadFromLocalStorage();
+  }, []);
 
   const clearProfileDocument = () => {
     setContentData(prev => ({
@@ -160,6 +197,24 @@ const AdminDashboard: React.FC = () => {
       profileDocumentName: '',
       profileDocumentData: ''
     }));
+  };
+
+  const handleDownloadPDF = (dataUrl: string, filename: string) => {
+    try {
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = filename || 'company-profile.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error('Download error:', err);
+      toast({
+        title: 'Error',
+        description: 'Failed to download PDF',
+        variant: 'destructive'
+      });
+    }
   };
 
   const handleSave = async () => {
@@ -179,14 +234,23 @@ const AdminDashboard: React.FC = () => {
       // Also save to localStorage for offline access
       localStorage.setItem('website-content', JSON.stringify(contentData));
 
+      toast({
+        title: 'Success',
+        description: 'Changes saved successfully',
+        variant: 'default'
+      });
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error) {
       console.error('Save error:', error);
       // Still try to save to localStorage as fallback
       localStorage.setItem('website-content', JSON.stringify(contentData));
-      setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 3000);
+
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to save changes to server. Changes saved locally.',
+        variant: 'destructive'
+      });
     } finally {
       setIsSaving(false);
     }
@@ -376,13 +440,13 @@ const AdminDashboard: React.FC = () => {
                             <span className="font-medium">{t('about.profileDownloadFileLabel')}</span>{' '}
                             <span>{contentData.profileDocumentName}</span>
                           </div>
-                          <a
-                            href={contentData.profileDocumentData}
-                            download={contentData.profileDocumentName}
+                          <button
+                            type="button"
+                            onClick={() => handleDownloadPDF(contentData.profileDocumentData!, contentData.profileDocumentName!)}
                             className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors duration-200"
                           >
                             {t('about.profileDownloadButton')}
-                          </a>
+                          </button>
                         </div>
                       ) : (
                         <div className="mb-4 rounded-lg bg-gray-100 dark:bg-gray-900/60 border border-dashed border-gray-300 dark:border-gray-700 px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
