@@ -381,13 +381,13 @@ const About: React.FC = () => {
               </div>
               <div className="flex items-center gap-3">
                 {profileDocument ? (
-                  <a
-                    href={profileDocument.url}
-                    download={profileDocument.name || 'company-profile.pdf'}
+                  <button
+                    type="button"
+                    onClick={() => handleDownloadPDF(profileDocument.url, profileDocument.name)}
                     className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold shadow-lg hover:from-blue-700 hover:to-purple-700 transition-transform duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
                   >
                     {t('about.profileDownloadButton')}
-                  </a>
+                  </button>
                 ) : (
                   <button
                     type="button"
