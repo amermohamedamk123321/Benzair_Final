@@ -36,6 +36,19 @@ const About: React.FC = () => {
     'https://cdn.builder.io/api/v1/image/assets%2F13a4766942d54028b94747b6985a55d1%2F1a29889cb3444ea693656f5ffdcc478e?format=webp&width=1600'
   ];
 
+  const handleDownloadPDF = (dataUrl: string, filename: string) => {
+    try {
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = filename || 'company-profile.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error('Download error:', err);
+    }
+  };
+
   const [imgIndex, setImgIndex] = useState(0);
   useEffect(() => {
     const id = setInterval(() => setImgIndex(i => (i + 1) % bgImages.length), 2500);
