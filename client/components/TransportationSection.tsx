@@ -16,21 +16,21 @@ const TransportationSection: React.FC = () => {
       image: "https://cdn.builder.io/api/v1/image/assets%2F13a4766942d54028b94747b6985a55d1%2Fc743a8ecbe644f2ca9a28f685e768bc3?format=webp&width=800",
       titleKey: "transport.air.title",
       descKey: "transport.air.desc",
-      featureKeys: ["transport.air.f1", "transport.air.f2", "transport.air.f3"],
+      featureKeys: [],
       icon: "✈️"
     },
     {
       image: "https://cdn.builder.io/api/v1/image/assets%2F13a4766942d54028b94747b6985a55d1%2F26abf54d75644b5fa9330f31a02481fb?format=webp&width=800",
       titleKey: "transport.sea.title",
       descKey: "transport.sea.desc",
-      featureKeys: ["transport.sea.f1", "transport.sea.f2", "transport.sea.f3"],
+      featureKeys: [],
       icon: "🚢"
     },
     {
       image: "https://fast-logisticsteam.com/layout/image/land-freight.jpg",
       titleKey: "transport.land.title",
       descKey: "transport.land.desc",
-      featureKeys: ["transport.land.f1", "transport.land.f2", "transport.land.f3"],
+      featureKeys: [],
       icon: "🚛"
     }
   ];
@@ -86,21 +86,23 @@ const TransportationSection: React.FC = () => {
                 </p>
 
                 {/* Features */}
-                <div className="space-y-3">
-                  <h4 className="font-semibold text-gray-800 dark:text-gray-200 text-sm uppercase tracking-wide">
-                    {t('logistics.keyFeatures')}
-                  </h4>
-                  <div className="flex flex-wrap gap-2">
-                    {method.featureKeys.map((featureKey, featureIndex) => (
-                      <span
-                        key={featureIndex}
-                        className="px-3 py-1 bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 text-sm rounded-full font-medium"
-                      >
-                        {t(featureKey)}
-                      </span>
-                    ))}
+                {method.featureKeys.length > 0 && (
+                  <div className="space-y-3">
+                    <h4 className="font-semibold text-gray-800 dark:text-gray-200 text-sm uppercase tracking-wide">
+                      {t('logistics.keyFeatures')}
+                    </h4>
+                    <div className="flex flex-wrap gap-2">
+                      {method.featureKeys.map((featureKey, featureIndex) => (
+                        <span
+                          key={featureIndex}
+                          className="px-3 py-1 bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300 text-sm rounded-full font-medium"
+                        >
+                          {t(featureKey)}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Hover Effect Border */}
                 <div className="absolute inset-0 border-2 border-blue-500 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
