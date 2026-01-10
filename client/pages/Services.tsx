@@ -18,7 +18,7 @@ const heroImages = [
 
 const serviceImages = [
   'https://cdn.builder.io/api/v1/image/assets%2F13a4766942d54028b94747b6985a55d1%2F1701c38b979b4dd09f34bb88cf2ea73f?format=webp&width=1400',
-  'https://cdn.builder.io/api/v1/image/assets%2F13a4766942d54028b94747b6985a55d1%2Fc10c39f522f545a6b07863bd89d883b8?format=webp&width=1400',
+  'https://cdn.builder.io/api/v1/image/assets%2F78f33eb38ebd4b05b3e8fe59c152e236%2F403d2b4c958e4b7491f83cb1e6376171?format=webp&width=800',
   'https://cdn.builder.io/api/v1/image/assets%2F13a4766942d54028b94747b6985a55d1%2F5cf7745244084fb2b0091ae5d5c599ed?format=webp&width=1400',
   'https://cdn.builder.io/api/v1/image/assets%2F13a4766942d54028b94747b6985a55d1%2F9c8b1ec25eb6489ea59b68745ebcff96?format=webp&width=1400'
 ];
