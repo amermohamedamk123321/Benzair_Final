@@ -105,7 +105,7 @@ const Footer: React.FC = () => {
               <h4 className="text-lg font-semibold mb-3">{t('contact.tag')}</h4>
               <ul className="space-y-2 text-blue-100">
                 <li><a href="mailto:Benaziryakta@gmail.com">Benaziryakta@gmail.com</a></li>
-                <li><a href="tel:+9377310107">+93 77 310 1070</a></li>
+                <li><a href="tel:+9377310107">70 10 310 77 93+</a></li>
               </ul>
               <div className="mt-6 contact-qr-section">
                 <div className="inline-flex items-center justify-center bg-white p-3 rounded-xl shadow-lg">
@@ -129,7 +129,6 @@ const Footer: React.FC = () => {
             <div className="text-sm text-blue-100 flex items-center gap-6">
               <span>{t('footer.copyright')}</span>
               <a className="hover:underline" href="#">{t('footer.privacy')}</a>
-              <a className="hover:underline" href="#">{t('footer.terms')}</a>
             </div>
           </div>
         </div>
