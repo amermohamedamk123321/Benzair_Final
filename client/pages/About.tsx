@@ -36,6 +36,19 @@ const About: React.FC = () => {
     'https://cdn.builder.io/api/v1/image/assets%2F13a4766942d54028b94747b6985a55d1%2F1a29889cb3444ea693656f5ffdcc478e?format=webp&width=1600'
   ];
 
+  const handleDownloadPDF = (dataUrl: string, filename: string) => {
+    try {
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = filename || 'company-profile.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error('Download error:', err);
+    }
+  };
+
   const [imgIndex, setImgIndex] = useState(0);
   useEffect(() => {
     const id = setInterval(() => setImgIndex(i => (i + 1) % bgImages.length), 2500);
@@ -75,7 +88,30 @@ const About: React.FC = () => {
   const [profileDocument, setProfileDocument] = useState<{ name: string; url: string } | null>(null);
 
   useEffect(() => {
-    const loadProfileDocument = () => {
+    const loadProfileDocument = async () => {
+      try {
+        // Try to load from server first
+        const res = await fetch('/api/content');
+        if (res.ok) {
+          const parsed = await res.json();
+          if (parsed.profileDocumentData && parsed.profileDocumentName) {
+            setProfileDocument({
+              name: String(parsed.profileDocumentName),
+              url: String(parsed.profileDocumentData)
+            });
+            // Cache to localStorage
+            try {
+              localStorage.setItem('website-content', JSON.stringify(parsed));
+            } catch {}
+            return;
+          } else {
+            setProfileDocument(null);
+            return;
+          }
+        }
+      } catch {}
+
+      // Fallback to localStorage if server request fails
       try {
         const stored = localStorage.getItem('website-content');
         if (!stored) {
@@ -345,13 +381,13 @@ const About: React.FC = () => {
               </div>
               <div className="flex items-center gap-3">
                 {profileDocument ? (
-                  <a
-                    href={profileDocument.url}
-                    download={profileDocument.name || 'company-profile.pdf'}
+                  <button
+                    type="button"
+                    onClick={() => handleDownloadPDF(profileDocument.url, profileDocument.name)}
                     className="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold shadow-lg hover:from-blue-700 hover:to-purple-700 transition-transform duration-200 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-900"
                   >
                     {t('about.profileDownloadButton')}
-                  </a>
+                  </button>
                 ) : (
                   <button
                     type="button"

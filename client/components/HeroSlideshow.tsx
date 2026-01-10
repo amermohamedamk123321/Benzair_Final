@@ -76,7 +76,7 @@ const HeroSlideshow: React.FC = () => {
   }), [texts, t]);
 
   return (
-    <div className="relative min-h-[60vh] md:h-screen overflow-hidden bg-gray-900">
+    <div className="relative min-h-[75vh] md:h-screen overflow-hidden bg-gray-900">
       {loaded && images.length > 0 && images.map((image, index) => (
         <div
           key={index}
@@ -87,8 +87,8 @@ const HeroSlideshow: React.FC = () => {
         </div>
       ))}
 
-      <div className={cn('relative h-full flex items-center z-10', dir==='rtl' ? 'justify-end' : 'justify-start')}>
-        <div className={cn('max-w-xl w-full px-4 sm:px-6 md:px-8 transform md:-translate-y-20 mt-12 md:mt-0 mx-auto md:mx-0', dir==='rtl' ? 'md:mr-12 text-right' : 'md:ml-12 text-center md:text-left')}>
+      <div className={cn('relative h-full flex items-center justify-center md:justify-start z-10 pb-24 md:pb-0 pt-16 md:pt-0', dir==='rtl' ? 'md:justify-end' : '')}>
+        <div className={cn('max-w-xl w-full px-4 sm:px-6 md:px-8 mx-auto md:mx-0', dir==='rtl' ? 'md:mr-12 text-right' : 'md:ml-12 text-center md:text-left')}>
           <div className={cn('group relative backdrop-blur-md bg-white/20 rounded-3xl p-6 md:p-10 border border-white/30 shadow-2xl hover:shadow-3xl transition-all duration-700 hover:scale-105 overflow-hidden flex flex-col justify-start', dir==='rtl' ? 'items-end' : 'items-start')}>
             <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-blue-500/5 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
@@ -156,7 +156,7 @@ const HeroSlideshow: React.FC = () => {
         </div>
       </div>
 
-      <div className="absolute bottom-6 md:bottom-8 left-1/2 transform -translate-x-1/2 z-20">
+      <div className="absolute bottom-8 md:bottom-8 left-1/2 transform -translate-x-1/2 z-20">
         {loaded && images.length > 0 ? (
           <div className="flex space-x-3">
             {images.map((_, index) => (

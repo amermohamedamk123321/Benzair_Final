@@ -312,9 +312,9 @@ const Index: React.FC = () => {
               <div className="relative z-10">
                 {/* Header with icon */}
                 <div className="mb-8">
-                  <div className="inline-flex items-center space-x-3 bg-blue-100 text-blue-900 backdrop-blur-lg px-4 sm:px-6 py-3 rounded-full mb-6 dark:bg-blue-900/40 dark:text-white">
+                  <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-blue-100 to-purple-100 text-blue-900 backdrop-blur-lg px-4 sm:px-6 py-3 rounded-full mb-6 dark:from-blue-900/40 dark:to-purple-900/40 dark:text-white">
                     <span className="text-2xl animate-bounce">🚀</span>
-                    <span className="text-custom-purple font-semibold">{t('cta.letsConnect')}</span>
+                    <span className="font-semibold">{t('cta.letsConnect')}</span>
                   </div>
                   <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6 text-slate-900 dark:text-white">
                     {t('cta.readyTitle')}

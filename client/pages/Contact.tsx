@@ -145,7 +145,7 @@ const Contact: React.FC = () => {
                 <span className="mt-1 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300">📞</span>
                 <div className={cn('', dir==='rtl' && 'text-right')}>
                   <p className="font-medium text-gray-900 dark:text-gray-100">{t('contact.phone')}</p>
-                  <a href={`tel:+9377101070`} className="text-blue-600 dark:text-blue-400 hover:underline"><span dir="ltr">+93 77 10 10 70</span></a>
+                  <a href={`tel:+9377310107`} className="text-blue-600 dark:text-blue-400 hover:underline"><span dir="ltr">+93 77 310 10 70</span></a>
                 </div>
               </div>
 

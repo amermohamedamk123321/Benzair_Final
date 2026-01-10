@@ -1,6 +1,7 @@
 import React, { useState, useEffect, ChangeEvent } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useLocale } from '@/hooks/useLocale';
+import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
 interface ContentData {
@@ -41,51 +42,94 @@ const fetchImageAsDataUrl = async (url: string, timeout = 10000): Promise<string
 
 const createTempId = () => 'temp-' + String(Date.now()) + '-' + Math.random().toString(36).slice(2, 8);
 
+const defaultContentData: ContentData = {
+  heroTitle: 'Premium Afghan Dried Fruits',
+  heroSubtitle: 'Sourced directly from contracted farmers across Afghanistan',
+  aboutText: 'Benazir Yakta Trading Company is a pioneering women-led Afghan exporter specializing in premium dried fruits, nuts, and spices.',
+  companyDescription: 'Premium Afghan dried fruits, nuts, and spices. Empowering women, supporting communities.',
+  contactEmail: 'info@benaziryakta.com',
+  contactAddress: 'Shahrak-e-Omid Sabz, Kabul, Afghanistan',
+  instagramUrl: '',
+  facebookUrl: '',
+  whatsappUrl: '',
+  twitterUrl: '',
+  linkedinUrl: '',
+  profileDocumentName: '',
+  profileDocumentData: ''
+};
+
 const AdminDashboard: React.FC = () => {
   const { user, logout } = useAuth();
   const { t, dir } = useLocale();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<string>('products');
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [saveSuccess, setSaveSuccess] = useState<boolean>(false);
+  const [contentLoading, setContentLoading] = useState<boolean>(true);
 
-  const [contentData, setContentData] = useState<ContentData>(() => {
-    try {
-      const saved = localStorage.getItem('website-content');
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        return {
-          heroTitle: parsed.heroTitle || 'Premium Afghan Dried Fruits',
-          heroSubtitle: parsed.heroSubtitle || 'Sourced directly from contracted farmers across Afghanistan',
-          aboutText: parsed.aboutText || 'Benazir Yakta Trading Company is a pioneering women-led Afghan exporter specializing in premium dried fruits, nuts, and spices.',
-          companyDescription: parsed.companyDescription || 'Premium Afghan dried fruits, nuts, and spices. Empowering women, supporting communities.',
-          contactEmail: parsed.contactEmail || 'info@benaziryakta.com',
-          contactAddress: parsed.contactAddress || 'Shahrak-e-Omid Sabz, Kabul, Afghanistan',
-          instagramUrl: parsed.instagramUrl || '',
-          facebookUrl: parsed.facebookUrl || '',
-          whatsappUrl: parsed.whatsappUrl || '',
-          twitterUrl: parsed.twitterUrl || '',
-          linkedinUrl: parsed.linkedinUrl || '',
-          profileDocumentName: parsed.profileDocumentName || '',
-          profileDocumentData: parsed.profileDocumentData || ''
-        } as ContentData;
+  const [contentData, setContentData] = useState<ContentData>(defaultContentData);
+
+  // Load content from server on mount, fallback to localStorage
+  useEffect(() => {
+    const loadContent = async () => {
+      setContentLoading(true);
+      try {
+        const res = await fetch('/api/content');
+        if (res.ok) {
+          const data = await res.json();
+          setContentData({
+            heroTitle: data.heroTitle || defaultContentData.heroTitle,
+            heroSubtitle: data.heroSubtitle || defaultContentData.heroSubtitle,
+            aboutText: data.aboutText || defaultContentData.aboutText,
+            companyDescription: data.companyDescription || defaultContentData.companyDescription,
+            contactEmail: data.contactEmail || defaultContentData.contactEmail,
+            contactAddress: data.contactAddress || defaultContentData.contactAddress,
+            instagramUrl: data.instagramUrl || '',
+            facebookUrl: data.facebookUrl || '',
+            whatsappUrl: data.whatsappUrl || '',
+            twitterUrl: data.twitterUrl || '',
+            linkedinUrl: data.linkedinUrl || '',
+            profileDocumentName: data.profileDocumentName || '',
+            profileDocumentData: data.profileDocumentData || ''
+          });
+          // Cache to localStorage
+          try {
+            localStorage.setItem('website-content', JSON.stringify(data));
+          } catch {}
+          return;
+        }
+      } catch (e) {
+        console.warn('Failed to load content from server:', e);
       }
-    } catch {}
-    return {
-      heroTitle: 'Premium Afghan Dried Fruits',
-      heroSubtitle: 'Sourced directly from contracted farmers across Afghanistan',
-      aboutText: 'Benazir Yakta Trading Company is a pioneering women-led Afghan exporter specializing in premium dried fruits, nuts, and spices.',
-      companyDescription: 'Premium Afghan dried fruits, nuts, and spices. Empowering women, supporting communities.',
-      contactEmail: 'info@benaziryakta.com',
-      contactAddress: 'Shahrak-e-Omid Sabz, Kabul, Afghanistan',
-      instagramUrl: '',
-      facebookUrl: '',
-      whatsappUrl: '',
-      twitterUrl: '',
-      linkedinUrl: '',
-      profileDocumentName: '',
-      profileDocumentData: ''
-    } as ContentData;
-  });
+
+      // Fallback to localStorage
+      try {
+        const saved = localStorage.getItem('website-content');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          setContentData({
+            heroTitle: parsed.heroTitle || defaultContentData.heroTitle,
+            heroSubtitle: parsed.heroSubtitle || defaultContentData.heroSubtitle,
+            aboutText: parsed.aboutText || defaultContentData.aboutText,
+            companyDescription: parsed.companyDescription || defaultContentData.companyDescription,
+            contactEmail: parsed.contactEmail || defaultContentData.contactEmail,
+            contactAddress: parsed.contactAddress || defaultContentData.contactAddress,
+            instagramUrl: parsed.instagramUrl || '',
+            facebookUrl: parsed.facebookUrl || '',
+            whatsappUrl: parsed.whatsappUrl || '',
+            twitterUrl: parsed.twitterUrl || '',
+            linkedinUrl: parsed.linkedinUrl || '',
+            profileDocumentName: parsed.profileDocumentName || '',
+            profileDocumentData: parsed.profileDocumentData || ''
+          });
+        }
+      } catch {}
+
+      setContentLoading(false);
+    };
+
+    loadContent();
+  }, []);
 
   const handleContentChange = (field: keyof ContentData, value: string) => {
     setContentData(prev => ({ ...prev, [field]: value }));
@@ -108,9 +152,44 @@ const AdminDashboard: React.FC = () => {
 
   const handleProfileFileInput = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0] || null;
-    handleProfileUpload(file);
+    if (file) {
+      handleProfileUpload(file);
+    }
     event.target.value = '';
   };
+
+  // Auto-save to localStorage on content change (debounced)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      try {
+        localStorage.setItem('website-content', JSON.stringify(contentData));
+      } catch (err) {
+        console.warn('Failed to save to localStorage:', err);
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [contentData]);
+
+  // Load from localStorage on mount if server data not available
+  useEffect(() => {
+    const loadFromLocalStorage = () => {
+      try {
+        const stored = localStorage.getItem('website-content');
+        if (stored) {
+          const parsed = JSON.parse(stored);
+          // Only use localStorage data if server hasn't loaded yet
+          setContentData(prev => ({
+            ...prev,
+            ...parsed
+          }));
+        }
+      } catch (err) {
+        console.warn('Failed to load from localStorage:', err);
+      }
+    };
+
+    loadFromLocalStorage();
+  }, []);
 
   const clearProfileDocument = () => {
     setContentData(prev => ({
@@ -120,13 +199,61 @@ const AdminDashboard: React.FC = () => {
     }));
   };
 
+  const handleDownloadPDF = (dataUrl: string, filename: string) => {
+    try {
+      const link = document.createElement('a');
+      link.href = dataUrl;
+      link.download = filename || 'company-profile.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error('Download error:', err);
+      toast({
+        title: 'Error',
+        description: 'Failed to download PDF',
+        variant: 'destructive'
+      });
+    }
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    localStorage.setItem('website-content', JSON.stringify(contentData));
-    setIsSaving(false);
-    setSaveSuccess(true);
-    setTimeout(() => setSaveSuccess(false), 3000);
+    try {
+      // Save to server
+      const res = await fetch('/api/content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(contentData)
+      });
+
+      if (!res.ok) {
+        throw new Error('Failed to save to server');
+      }
+
+      // Also save to localStorage for offline access
+      localStorage.setItem('website-content', JSON.stringify(contentData));
+
+      toast({
+        title: 'Success',
+        description: 'Changes saved successfully',
+        variant: 'default'
+      });
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } catch (error) {
+      console.error('Save error:', error);
+      // Still try to save to localStorage as fallback
+      localStorage.setItem('website-content', JSON.stringify(contentData));
+
+      toast({
+        title: 'Error',
+        description: error instanceof Error ? error.message : 'Failed to save changes to server. Changes saved locally.',
+        variant: 'destructive'
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const tabs = [
@@ -313,13 +440,13 @@ const AdminDashboard: React.FC = () => {
                             <span className="font-medium">{t('about.profileDownloadFileLabel')}</span>{' '}
                             <span>{contentData.profileDocumentName}</span>
                           </div>
-                          <a
-                            href={contentData.profileDocumentData}
-                            download={contentData.profileDocumentName}
+                          <button
+                            type="button"
+                            onClick={() => handleDownloadPDF(contentData.profileDocumentData!, contentData.profileDocumentName!)}
                             className="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors duration-200"
                           >
                             {t('about.profileDownloadButton')}
-                          </a>
+                          </button>
                         </div>
                       ) : (
                         <div className="mb-4 rounded-lg bg-gray-100 dark:bg-gray-900/60 border border-dashed border-gray-300 dark:border-gray-700 px-4 py-3 text-sm text-gray-600 dark:text-gray-300">
@@ -803,7 +930,24 @@ function AdminProducts() {
   const onPickNewImage = async (file?: File | null) => {
     if (!file) return;
     const dataUrl = await compressImage(file);
-    setNewProduct(p => ({ ...p, imageUrl: dataUrl }));
+    // Try to upload to server immediately
+    try {
+      const res = await safeFetch('/uploads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dataUrl })
+      });
+      if (res && res.ok) {
+        const data = await res.json();
+        setNewProduct(p => ({ ...p, imageUrl: data.url }));
+      } else {
+        // Fallback: use data URL for now, will be uploaded with product
+        setNewProduct(p => ({ ...p, imageUrl: dataUrl }));
+      }
+    } catch (e) {
+      // Offline or network error: use data URL for preview
+      setNewProduct(p => ({ ...p, imageUrl: dataUrl }));
+    }
   };
 
   const createProduct = async () => {
@@ -844,6 +988,13 @@ function AdminProducts() {
       setNewProduct({ name: '', unit: 'kg', price: 0, currency: 'USD', source: 'bought', initialImportQty: 0, initialStock: 0, importDate: '', imageUrl: '', recent: false });
       await load();
     } catch (e:any) {
+      // If server request fails and we're offline, reject if image is still a data URL
+      if (newProduct.imageUrl && newProduct.imageUrl.startsWith('data:image/')) {
+        setModalError('You are offline. Please upload an image while connected to the internet, or retry when connection is available.');
+        setCreating(false);
+        return;
+      }
+
       const id = (window.crypto && 'randomUUID' in window.crypto) ? (window.crypto as any).randomUUID() : String(Date.now());
       const now = new Date().toISOString();
       const product:any = {
@@ -1131,6 +1282,24 @@ function ProductEditor({ product, onSaved, onError }:{ product:any; onSaved:()=>
     });
   };
 
+  const uploadImageToServer = async (dataUrl: string): Promise<string> => {
+    try {
+      const res = await fetch('/uploads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ dataUrl }),
+        signal: AbortSignal.timeout ? AbortSignal.timeout(8000) : undefined
+      });
+      if (res && res.ok) {
+        const data = await res.json();
+        return data.url;
+      }
+    } catch (e) {
+      console.warn('Image upload failed, will use data URL', e);
+    }
+    return dataUrl;
+  };
+
   const onPickImage = async (file?: File | null) => {
     if (!file) return;
     try {
@@ -1158,7 +1327,9 @@ function ProductEditor({ product, onSaved, onError }:{ product:any; onSaved:()=>
         const res = await p;
         return res || await readFileAsDataUrl(file);
       })();
-      setForm(f => ({ ...f, imageUrl: dataUrl }));
+      // Try to upload to server
+      const finalUrl = await uploadImageToServer(dataUrl);
+      setForm(f => ({ ...f, imageUrl: finalUrl }));
     } catch (e:any) {
       onError?.(e?.message || 'Failed to process image');
     }

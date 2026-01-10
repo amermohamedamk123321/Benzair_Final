@@ -48,6 +48,12 @@ const GlobalPresence: React.FC = () => {
       x: 43, y: 25
     },
     {
+      nameKey: 'countries.australia.name',
+      descKey: 'countries.australia.description',
+      image: 'https://cdn.builder.io/api/v1/image/assets%2F78f33eb38ebd4b05b3e8fe59c152e236%2F6e940d6a02884e73acd03fdf01698b0e?format=webp&width=800',
+      x: 88, y: 70
+    },
+    {
       nameKey: 'countries.usa.name',
       descKey: 'countries.usa.description',
       image: 'https://cdn.builder.io/api/v1/image/assets%2F13a4766942d54028b94747b6985a55d1%2Fce396255f7154c3e8c00f1eceed3dada?format=webp&width=800',
@@ -82,12 +88,6 @@ const GlobalPresence: React.FC = () => {
       descKey: 'countries.italy.description',
       image: 'https://cdn.builder.io/api/v1/image/assets%2F13a4766942d54028b94747b6985a55d1%2Fdbe6e39c9dab457b9f348d9067a8bdd7?format=webp&width=800',
       x: 51, y: 31
-    },
-    {
-      nameKey: 'countries.australia.name',
-      descKey: 'countries.australia.description',
-      image: 'https://cdn.builder.io/api/v1/image/assets%2F13a4766942d54028b94747b6985a55d1%2F4876acb8a4b2427bbf1457cd1a69ff1e?format=webp&width=800',
-      x: 88, y: 70
     }
   ];
 
@@ -194,7 +194,7 @@ const GlobalPresence: React.FC = () => {
 
           {/* Country Showcase Grid */}
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {countries.filter(c => ['countries.india.name','countries.dubai.name','countries.france.name','countries.switzerland.name','countries.uk.name'].includes(c.nameKey)).map((country, index) => (
+            {countries.filter(c => ['countries.india.name','countries.dubai.name','countries.france.name','countries.switzerland.name','countries.uk.name','countries.australia.name'].includes(c.nameKey)).map((country, index) => (
               <div
                 key={country.nameKey}
                 className={`group relative overflow-hidden rounded-2xl bg-white dark:bg-white/5 backdrop-blur-lg border border-blue-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-white/30 transition-all duration-500 hover:scale-105 hover:-translate-y-2 ${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`}

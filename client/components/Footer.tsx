@@ -8,19 +8,44 @@ const Footer: React.FC = () => {
   const { t, dir } = useLocale() as any;
   const [links, setLinks] = useState<{ instagram?: string; facebook?: string; whatsapp?: string; twitter?: string; linkedin?: string }>({});
   useEffect(()=>{
-    try {
-      const s = localStorage.getItem('website-content');
-      if (s) {
-        const d = JSON.parse(s);
-        setLinks({
-          instagram: d.instagramUrl || '',
-          facebook: d.facebookUrl || '',
-          whatsapp: d.whatsappUrl || '',
-          twitter: d.twitterUrl || '',
-          linkedin: d.linkedinUrl || ''
-        });
-      }
-    } catch {}
+    const loadLinks = async () => {
+      try {
+        // Try to load from server first
+        const res = await fetch('/api/content');
+        if (res.ok) {
+          const d = await res.json();
+          setLinks({
+            instagram: d.instagramUrl || '',
+            facebook: d.facebookUrl || '',
+            whatsapp: d.whatsappUrl || '',
+            twitter: d.twitterUrl || '',
+            linkedin: d.linkedinUrl || ''
+          });
+          // Cache to localStorage
+          try {
+            localStorage.setItem('website-content', JSON.stringify(d));
+          } catch {}
+          return;
+        }
+      } catch {}
+
+      // Fallback to localStorage if server request fails
+      try {
+        const s = localStorage.getItem('website-content');
+        if (s) {
+          const d = JSON.parse(s);
+          setLinks({
+            instagram: d.instagramUrl || '',
+            facebook: d.facebookUrl || '',
+            whatsapp: d.whatsappUrl || '',
+            twitter: d.twitterUrl || '',
+            linkedin: d.linkedinUrl || ''
+          });
+        }
+      } catch {}
+    };
+
+    loadLinks();
   },[]);
 
   return (
@@ -43,9 +68,6 @@ const Footer: React.FC = () => {
                   <p className="text-lg text-blue-400 font-medium text-center">{t('tradingCompany')}</p>
                 </div>
               </div>
-              <p className="text-blue-100 dark:text-gray-300 leading-relaxed mb-6 transition-colors duration-300">
-                {t('hero.lead')}
-              </p>
               <div className="flex justify-center md:justify-start space-x-4">
                 <a href={links.instagram || '#'} target={links.instagram ? '_blank' : undefined} rel={links.instagram ? 'noopener noreferrer' : undefined} className="w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-500 rounded-full flex items-center justify-center hover:from-purple-700 hover:to-pink-600 transition-all duration-300 cursor-pointer transform hover:scale-110 group/icon">
                   <svg className="w-6 h-6 text-white group-hover/icon:scale-110 transition-transform duration-300" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
@@ -83,7 +105,7 @@ const Footer: React.FC = () => {
               <h4 className="text-lg font-semibold mb-3">{t('contact.tag')}</h4>
               <ul className="space-y-2 text-blue-100">
                 <li><a href="mailto:Benaziryakta@gmail.com">Benaziryakta@gmail.com</a></li>
-                <li><a href="tel:+9377101070">+93 77 10 10 70</a></li>
+                <li><a href="tel:+9377310107">70 10 310 77 93+</a></li>
               </ul>
               <div className="mt-6 contact-qr-section">
                 <div className="inline-flex items-center justify-center bg-white p-3 rounded-xl shadow-lg">
@@ -107,7 +129,6 @@ const Footer: React.FC = () => {
             <div className="text-sm text-blue-100 flex items-center gap-6">
               <span>{t('footer.copyright')}</span>
               <a className="hover:underline" href="#">{t('footer.privacy')}</a>
-              <a className="hover:underline" href="#">{t('footer.terms')}</a>
             </div>
           </div>
         </div>

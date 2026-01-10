@@ -9,6 +9,7 @@ import heroRouter from "./routes/hero.js";
 import awardsRouter from "./routes/awards.js";
 import adminsRouter from "./routes/admins.js";
 import uploadsRouter from "./routes/uploads.js";
+import contentRouter from "./routes/content.js";
 
 export function createServer() {
   const app = express();
@@ -32,6 +33,7 @@ export function createServer() {
   app.use("/api/hero", heroRouter);
   app.use('/api/awards', awardsRouter);
   app.use('/api/admins', adminsRouter);
+  app.use('/api/content', contentRouter);
   app.use('/uploads', uploadsRouter);
 
   return app;
