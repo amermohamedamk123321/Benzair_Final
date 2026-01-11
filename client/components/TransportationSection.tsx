@@ -27,7 +27,7 @@ const TransportationSection: React.FC = () => {
       icon: "🚢"
     },
     {
-      image: "https://fast-logisticsteam.com/layout/image/land-freight.jpg",
+      image: "https://cdn.builder.io/api/v1/image/assets%2F78f33eb38ebd4b05b3e8fe59c152e236%2Ffc99a08363994b13a08bb6bd70520637?format=webp&width=800",
       titleKey: "transport.land.title",
       descKey: "transport.land.desc",
       featureKeys: [],

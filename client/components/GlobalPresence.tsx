@@ -123,7 +123,7 @@ const GlobalPresence: React.FC = () => {
         <div className={`text-center mb-16 transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
           <div className="inline-flex items-center space-x-3 bg-blue-50 dark:bg-white/10 backdrop-blur-lg px-8 py-3 rounded-full mb-8 border border-blue-200 dark:border-white/20">
             <span className="text-3xl animate-bounce" role="img" aria-label="Globe">🌐</span>
-            <span className="text-blue-900 dark:text-white font-semibold text-lg">{t('global.title')}</span>
+            <span className="text-blue-900 dark:text-white font-semibold text-lg">{t('global.badge')}</span>
           </div>
           <h2 className="text-5xl md:text-7xl font-bold mb-8 bg-gradient-to-r from-blue-900 via-blue-600 to-blue-900 dark:from-white dark:via-blue-200 dark:to-white bg-clip-text text-transparent">
             {t('global.title')}
