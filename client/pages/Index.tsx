@@ -168,7 +168,7 @@ const Index: React.FC = () => {
                 <span className="text-2xl animate-bounce">🌱</span>
                 <span className="text-blue-700 font-semibold">{t('ourStory')}</span>
               </div>
-              <h2 className={cn('text-3xl sm:text-4xl md:text-6xl font-bold text-gray-800 dark:text-gray-200 mb-6 bg-gradient-to-r from-gray-800 dark:from-gray-200 via-blue-600 to-purple-600 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300', dir==='rtl' ? 'text-right' : 'text-center')}>
+              <h2 className="text-3xl sm:text-4xl md:text-6xl font-bold text-gray-800 dark:text-gray-200 mb-6 bg-gradient-to-r from-gray-800 dark:from-gray-200 via-blue-600 to-purple-600 bg-clip-text text-transparent hover:scale-105 transition-transform duration-300 text-center">
                 {t('about.company.heading')}
               </h2>
               <div className="w-40 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 mx-auto rounded-full animate-pulse"></div>
@@ -226,7 +226,7 @@ const Index: React.FC = () => {
               <span className="text-2xl animate-bounce">⭐</span>
               <span className="text-blue-700 font-semibold">{t('excellence')}</span>
             </div>
-            <h2 className={cn('text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 dark:text-gray-200 mb-6 transform hover:scale-105 transition-transform duration-300', dir==='rtl' ? 'text-right' : 'text-center')}>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-gray-800 dark:text-gray-200 mb-6 transform hover:scale-105 transition-transform duration-300 text-center">
               {t('whyChooseUs')}
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto rounded-full animate-pulse"></div>
